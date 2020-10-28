@@ -33,7 +33,7 @@ export const { setHotProducts, setNewArrivalProducts, setNewProducts, setIsLoadi
 
 function fetchHotProducts(currentProducts = []) {
     const _fetchApi = () => {
-        return axiosClient.get("/product");
+        return axiosClient.get("/client/product");
     }
 
     return async (dispatch) => {
@@ -52,7 +52,7 @@ function fetchHotProducts(currentProducts = []) {
 
 function fetchNewProducts(currentProducts = []) {
     const _fetchApi = () => {
-        return axiosClient.get("/product");
+        return axiosClient.get("/client/product");
     }
 
     return async (dispatch) => {
@@ -71,7 +71,7 @@ function fetchNewProducts(currentProducts = []) {
 
 function fetchNewArrivalProducts(currentProducts = []) {
     const _fetchApi = () => {
-        return axiosClient.get("/product");
+        return axiosClient.get("/client/product");
     }
 
     return async (dispatch) => {

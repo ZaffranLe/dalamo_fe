@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { Col, Carousel, Skeleton } from "antd";
+import { Col, Carousel, Skeleton, Row } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import CommentBig from "./comment-big";
 import { fetchComments } from "../../../redux/slices/comment";
 
 function CommentSection(props) {
-    const { comments, isLoading } = useSelector(state => state.comment);
+    const { comments, isLoading } = useSelector((state) => state.comment);
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchComments(comments));
@@ -21,7 +21,13 @@ function CommentSection(props) {
                     pauseOnHover={false}
                     dots={false}
                 >
-                    {comments.map(comment => (<CommentBig comment={comment} />))}
+                    <Row>
+                        <Col span={24}>
+                            {comments.map((comment) => (
+                                <CommentBig comment={comment} />
+                            ))}
+                        </Col>
+                    </Row>
                 </Carousel>
             </Col>
         </Skeleton>

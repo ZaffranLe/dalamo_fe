@@ -56,7 +56,7 @@ function HomePage(props) {
             </Row>
             <Row
                 style={{
-                    backgroundColor: "#CCFBE9",
+                    backgroundColor: "#F6F6F6",
                     paddingTop: 100,
                     paddingBottom: 100,
                 }}

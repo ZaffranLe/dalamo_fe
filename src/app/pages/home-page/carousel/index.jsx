@@ -39,10 +39,10 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Test 1</h1>
+                                <h1>Nhập khẩu</h1>
                                 <div>
-                                    <p>Short text</p>
-                                    <p>Long text</p>
+                                    <p>100% từ CHLB Đức</p>
+                                    <p>Made in Germany</p>
                                 </div>
                             </div>
                         </Col>
@@ -52,10 +52,10 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Test 2</h1>
+                                <h1>Hàng chính hãng</h1>
                                 <div>
-                                    <p>A very complicated text ipsum</p>
-                                    <p>Sample text</p>
+                                    <p>Nâng niu từng sản phẩm</p>
+                                    <p>Vì sức khoẻ cộng đồng</p>
                                 </div>
                             </div>
                         </Col>
@@ -65,10 +65,9 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Test 3</h1>
+                                <h1>Dalamo</h1>
                                 <div>
-                                    <p>Lorem ipsum</p>
-                                    <p>Sample text</p>
+                                    <p>Bạn của mọi nhà</p>
                                 </div>
                             </div>
                         </Col>

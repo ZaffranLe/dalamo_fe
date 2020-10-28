@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import {
-    ShoppingOutlined,
     ShoppingTwoTone,
-    SearchOutlined,
+    DownOutlined,
     UserOutlined,
     HomeOutlined,
     RetweetOutlined,
     UnorderedListOutlined,
     InboxOutlined,
+    DingdingOutlined,
+    SearchOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton } from "antd";
+import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss";
 import Logo from "../../../assets/img/logo.png";
@@ -44,18 +45,22 @@ function UserHeader(props) {
             <div className="logo">
                 <img src={Logo} alt="Logo dalamo" style={{ maxWidth: "100%" }} />
             </div>
-            <Menu style={{ width: "100%" }} key="menu" mode="horizontal" selectable={false}>
+            <Menu key="menu" id="header-menu" mode="horizontal" selectable={false}>
                 <Menu.SubMenu
                     className="category-menu category-menu__bg--green"
                     key="Category"
-                    title="Danh mục sản phẩm"
+                    title={
+                        <>
+                            <span>
+                                Danh mục sản phẩm <DownOutlined />
+                            </span>
+                        </>
+                    }
                     icon={<UnorderedListOutlined />}
                 >
-                    <Skeleton loading={isLoadingCategory}>
-                        {categories.map((category, idx) => (
-                            <Menu.Item key={category["id"]}>{category["name"]}</Menu.Item>
-                        ))}
-                    </Skeleton>
+                    {categories.map((category, idx) => (
+                        <Menu.Item key={category["id"]}>{category["name"]}</Menu.Item>
+                    ))}
                 </Menu.SubMenu>
                 <Menu.Item key="HomePage" icon={<HomeOutlined />}>
                     <Link to="/">Trang chủ</Link>
@@ -63,9 +68,54 @@ function UserHeader(props) {
                 <Menu.Item key="Product" icon={<InboxOutlined />}>
                     <Link to="/product">Sản phẩm</Link>
                 </Menu.Item>
-            </Menu>
-            <Menu key="user" mode="horizontal" selectable={false}>
+                <Menu.SubMenu
+                    className="category-menu"
+                    title={
+                        <>
+                            <span>
+                                Tìm theo hãng <DownOutlined />
+                            </span>
+                        </>
+                    }
+                    key="Brand"
+                    icon={<DingdingOutlined />}
+                >
+                    <Menu.Item>Abc</Menu.Item>
+                </Menu.SubMenu>
+
+                <Menu.Item>
+                    <Input placeholder="Tìm kiếm..." suffix={<SearchOutlined />} />
+                </Menu.Item>
+                {user ? (
+                    <Menu.SubMenu
+                        className="float-right"
+                        title={
+                            <>
+                                <span style={{ marginRight: 4 }}>Xin chào </span>
+                                <span className="username">{user["name"]}</span>
+                                <Avatar style={{ marginLeft: 8 }} src={Logo} />
+                            </>
+                        }
+                    >
+                        <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
+                        <Menu.Item key="Orders">Danh sách đơn hàng</Menu.Item>
+                        <Menu.Item key="SignOut">Đăng xuất</Menu.Item>
+                    </Menu.SubMenu>
+                ) : (
+                    <Menu.SubMenu
+                        className="float-right"
+                        icon={<UserOutlined className="icon--non-margin" />}
+                    >
+                        <Menu.Item key="Login" onClick={() => handleOpenLoginModal("login")}>
+                            Đăng nhập
+                        </Menu.Item>
+                        <Menu.Item key="Register" onClick={() => handleOpenLoginModal("register")}>
+                            Đăng ký
+                        </Menu.Item>
+                    </Menu.SubMenu>
+                )}
                 <Menu.Item
+                    className="float-right"
                     key="Cart"
                     icon={
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
@@ -79,6 +129,7 @@ function UserHeader(props) {
                     }
                 />
                 <Menu.Item
+                    className="float-right"
                     onClick={handleOpenCompareModal}
                     key="Compare"
                     icon={
@@ -89,31 +140,6 @@ function UserHeader(props) {
                         </Tooltip>
                     }
                 />
-                {user ? (
-                    <Menu.SubMenu
-                        title={
-                            <>
-                                <span style={{ marginRight: 4 }}>Xin chào </span>
-                                <span className="username">{user["name"]}</span>
-                                {/* TODO: Username */}
-                                <Avatar style={{ marginLeft: 8 }} src={Logo} />
-                            </>
-                        }
-                    >
-                        <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
-                        <Menu.Item key="Orders">Danh sách đơn hàng</Menu.Item>
-                        <Menu.Item key="SignOut">Đăng xuất</Menu.Item>
-                    </Menu.SubMenu>
-                ) : (
-                    <Menu.SubMenu icon={<UserOutlined className="icon--non-margin" />}>
-                        <Menu.Item key="Login" onClick={() => handleOpenLoginModal("login")}>
-                            Đăng nhập
-                        </Menu.Item>
-                        <Menu.Item key="Register" onClick={() => handleOpenLoginModal("register")}>
-                            Đăng ký
-                        </Menu.Item>
-                    </Menu.SubMenu>
-                )}
             </Menu>
             <CompareModal />
             <LoginModal />

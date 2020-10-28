@@ -25,7 +25,7 @@ export const { setComments, setIsLoading } = actions;
 
 function fetchComments(currentComments = []) {
     const _fetchApi = () => {
-        return axiosClient.get("/comment");
+        return axiosClient.get("/client/comment");
     }
 
     return async (dispatch) => {

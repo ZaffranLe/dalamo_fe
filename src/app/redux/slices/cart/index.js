@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import axiosClient from "../../../utils/common/axiosClient";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {

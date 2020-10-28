@@ -25,7 +25,7 @@ export const { setCategories, setIsLoading } = actions;
 
 function fetchCategories(currentCategories = []) {
     const _fetchApi = () => {
-        return axiosClient.get("/category");
+        return axiosClient.get("/client/category");
     }
 
     return async (dispatch) => {
@@ -35,6 +35,7 @@ function fetchCategories(currentCategories = []) {
             }
             const data = await _fetchApi();
             dispatch(setCategories(data));
+            console.log(data);
             dispatch(setIsLoading(false));
         } catch (e) {
             console.error(e);
