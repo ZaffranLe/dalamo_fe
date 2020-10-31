@@ -11,14 +11,14 @@ function CommentBig(props) {
     const rating = [0, 0, 0, 0, 0];
     rating.fill(1, 0, comment["rate"] - 1);
     return (
-        <div className="text--center comment-slide">
+        <div className="text-center comment-slide">
             <img className="img--round img--border-black" src={faker.image.avatar()} alt="Avatar" />
             <br />
             {rating.map((rate) =>
                 rate ? <StarTwoTone twoToneColor="#FF9642" /> : <StarOutlined />
             )}
             <p>
-                <span className="text--big">{comment["content"]}</span>
+                <span className="text-big">{comment["content"]}</span>
                 <br />
                 <HeartTwoTone twoToneColor="#D7385E" />
                 <br />

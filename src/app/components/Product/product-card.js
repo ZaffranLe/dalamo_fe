@@ -50,7 +50,7 @@ function ProductCard(props) {
                     </Carousel>
                     <div className="custom-overlay" style={{ marginTop: 10, marginLeft: 10 }}>
                         {Boolean(product["isDiscount"]) && (
-                            <span className="text--big" style={{ color: "#FA6BFE" }}>
+                            <span className="text-big" style={{ color: "#FA6BFE" }}>
                                 -{product["discountPercent"]}%
                             </span>
                         )}

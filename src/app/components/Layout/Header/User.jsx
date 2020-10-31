@@ -47,7 +47,7 @@ function UserHeader(props) {
             </div>
             <Menu key="menu" id="header-menu" mode="horizontal" selectable={false}>
                 <Menu.SubMenu
-                    className="category-menu category-menu__bg--green"
+                    className="padding-menu padding-menu__bg--green"
                     key="Category"
                     title={
                         <>
@@ -62,14 +62,14 @@ function UserHeader(props) {
                         <Menu.Item key={category["id"]}>{category["name"]}</Menu.Item>
                     ))}
                 </Menu.SubMenu>
-                <Menu.Item key="HomePage" icon={<HomeOutlined />}>
+                <Menu.Item className="padding-menu" key="HomePage" icon={<HomeOutlined />}>
                     <Link to="/">Trang chủ</Link>
                 </Menu.Item>
-                <Menu.Item key="Product" icon={<InboxOutlined />}>
+                <Menu.Item className="padding-menu" key="Product" icon={<InboxOutlined />}>
                     <Link to="/product">Sản phẩm</Link>
                 </Menu.Item>
                 <Menu.SubMenu
-                    className="category-menu"
+                    className="padding-menu"
                     title={
                         <>
                             <span>
@@ -83,12 +83,12 @@ function UserHeader(props) {
                     <Menu.Item>Abc</Menu.Item>
                 </Menu.SubMenu>
 
-                <Menu.Item>
+                <Menu.Item className="padding-menu">
                     <Input placeholder="Tìm kiếm..." suffix={<SearchOutlined />} />
                 </Menu.Item>
                 {user ? (
                     <Menu.SubMenu
-                        className="float-right"
+                        className="float-right padding-menu"
                         title={
                             <>
                                 <span style={{ marginRight: 4 }}>Xin chào </span>
@@ -103,7 +103,7 @@ function UserHeader(props) {
                     </Menu.SubMenu>
                 ) : (
                     <Menu.SubMenu
-                        className="float-right"
+                        className="float-right padding-menu"
                         icon={<UserOutlined className="icon--non-margin" />}
                     >
                         <Menu.Item key="Login" onClick={() => handleOpenLoginModal("login")}>
@@ -114,10 +114,8 @@ function UserHeader(props) {
                         </Menu.Item>
                     </Menu.SubMenu>
                 )}
-                <Menu.Item
-                    className="float-right"
-                    key="Cart"
-                    icon={
+                <Menu.Item className="float-right padding-menu" key="Cart">
+                    <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
                                 <ShoppingTwoTone
@@ -126,10 +124,10 @@ function UserHeader(props) {
                                 />
                             </Badge>
                         </Tooltip>
-                    }
-                />
+                    </Link>
+                </Menu.Item>
                 <Menu.Item
-                    className="float-right"
+                    className="float-right padding-menu"
                     onClick={handleOpenCompareModal}
                     key="Compare"
                     icon={

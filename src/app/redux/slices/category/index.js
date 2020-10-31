@@ -35,7 +35,6 @@ function fetchCategories(currentCategories = []) {
             }
             const data = await _fetchApi();
             dispatch(setCategories(data));
-            console.log(data);
             dispatch(setIsLoading(false));
         } catch (e) {
             console.error(e);

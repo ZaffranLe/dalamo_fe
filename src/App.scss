@@ -9,12 +9,23 @@
 }
 
 .text {
-    &--center {
+    &-center {
         text-align: center;
+        input {
+            text-align: center;
+        }
     }
 
-    &--big {
+    &-big {
         font-size: big;
+    }
+
+    &-red {
+        color: red;
+    }
+
+    &-bold {
+        font-weight: bold;
     }
 }
 
@@ -25,5 +36,22 @@
 
     &--border-black {
         border: 1px solid black;
+    }
+}
+
+.bg {
+    &-success {
+        background-color: #ccf6c8;
+        color: black;
+    }
+
+    &-warning {
+        background-color: #fafcc2;
+        color: black;
+    }
+
+    &-danger {
+        background-color: #aa3a3a;
+        color: white;
     }
 }

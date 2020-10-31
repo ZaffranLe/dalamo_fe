@@ -4,6 +4,7 @@ import { Switch, Redirect, Route } from "react-router";
 import NotFound from "../components/NotFound";
 import UserLayout from "../components/Layout/User.jsx";
 const HomePage = lazy(() => import("../pages/home-page"));
+const Cart = lazy(() => import("../pages/cart"));
 
 function LayoutRoute({ component: Component, ...rest }) {
     return (
@@ -22,6 +23,7 @@ function Routes() {
     return (
         <BrowserRouter>
             <Switch>
+                <LayoutRoute exact path="/cart" component={Cart} />
                 <LayoutRoute exact path="/" component={HomePage} />
                 <Route component={NotFound} />
             </Switch>
