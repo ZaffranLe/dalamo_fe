@@ -90,15 +90,17 @@ function Cart(props) {
         {
             title: "Thành tiền",
             key: "totalPrice",
-            render: (text, record) => {return (
-                <span className="text-bold text-red">
-                    {formatVietnameseCurrency(
-                        parseInt(record["cardQuantity"]) * record["isDiscount"]
-                            ? calcDiscountPrice(record["price"], record["discountPercent"])
-                            : record["price"]
-                    )}
-                </span>
-            }),
+            render: (text, record) => {
+                return (
+                    <span className="text-bold text-red">
+                        {formatVietnameseCurrency(
+                            (record["isDiscount"]
+                                ? calcDiscountPrice(record["price"], record["discountPercent"])
+                                : record["price"]) * parseInt(record["cartQuantity"])
+                        )}
+                    </span>
+                );
+            },
         },
         {
             title: "",
