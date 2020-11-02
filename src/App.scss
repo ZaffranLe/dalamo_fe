@@ -16,6 +16,13 @@
         }
     }
 
+    &-right {
+        text-align: right;
+        input {
+            text-align: right;
+        }
+    }
+
     &-big {
         font-size: big;
     }
@@ -53,5 +60,48 @@
     &-danger {
         background-color: #aa3a3a;
         color: white;
+    }
+
+    &-green {
+        background-color: #668866;
+        color: white;
+    }
+}
+
+.m {
+    &t {
+        &-5 {
+            margin-top: 5px;
+        }
+        &-10 {
+            margin-top: 10px;
+        }
+        &-15 {
+            margin-top: 15px;
+        }
+        &-20 {
+            margin-top: 20px;
+        }
+        &-25 {
+            margin-top: 25px;
+        }
+    }
+
+    &b {
+        &-5 {
+            margin-bottom: 5px;
+        }
+        &-10 {
+            margin-bottom: 10px;
+        }
+        &-15 {
+            margin-bottom: 15px;
+        }
+        &-20 {
+            margin-bottom: 20px;
+        }
+        &-25 {
+            margin-bottom: 25px;
+        }
     }
 }

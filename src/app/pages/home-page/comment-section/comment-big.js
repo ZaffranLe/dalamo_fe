@@ -14,8 +14,8 @@ function CommentBig(props) {
         <div className="text-center comment-slide">
             <img className="img--round img--border-black" src={faker.image.avatar()} alt="Avatar" />
             <br />
-            {rating.map((rate) =>
-                rate ? <StarTwoTone twoToneColor="#FF9642" /> : <StarOutlined />
+            {rating.map((rate, idx) =>
+                rate ? <StarTwoTone key={idx} twoToneColor="#FF9642" /> : <StarOutlined key={idx} />
             )}
             <p>
                 <span className="text-big">{comment["content"]}</span>

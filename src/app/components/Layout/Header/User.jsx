@@ -10,7 +10,7 @@ import {
     DingdingOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input } from "antd";
+import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input, Divider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss";
 import Logo from "../../../assets/img/logo.png";
@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { openModal as openCompareModal } from "../../../redux/slices/compare";
 import { openModal as openLoginModal } from "../../../redux/slices/login";
 import { fetchCategories } from "../../../redux/slices/category";
+import { fetchBrands } from "../../../redux/slices/brand";
 import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
 
@@ -26,10 +27,12 @@ function UserHeader(props) {
     const dispatch = useDispatch();
     const productsCompare = useSelector((state) => state.compare.products);
     const productsCart = useSelector((state) => state.cart.products);
-    const { categories, isLoading: isLoadingCategory } = useSelector((state) => state.category);
+    const { categories } = useSelector((state) => state.category);
+    const { brands } = useSelector((state) => state.brand);
 
     useEffect(() => {
         dispatch(fetchCategories(categories));
+        dispatch(fetchBrands(brands));
     }, []);
 
     const handleOpenCompareModal = () => {
@@ -80,7 +83,11 @@ function UserHeader(props) {
                     key="Brand"
                     icon={<DingdingOutlined />}
                 >
-                    <Menu.Item>Abc</Menu.Item>
+                    <Menu.Item>Tìm tất cả các hãng</Menu.Item>
+                    <Divider>Một số hãng nổi bật</Divider>
+                    {brands.slice(0, 10).map((brand, idx) => (
+                        <Menu.Item key={brand["id"]}>{brand["name"]}</Menu.Item>
+                    ))}
                 </Menu.SubMenu>
 
                 <Menu.Item className="padding-menu">
@@ -118,10 +125,7 @@ function UserHeader(props) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone
-                                    twoToneColor="#6da9f7"
-                                    className="icon--non-margin"
-                                />
+                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
                             </Badge>
                         </Tooltip>
                     </Link>

@@ -23,8 +23,8 @@ function CommentSection(props) {
                 >
                     <Row>
                         <Col span={24}>
-                            {comments.map((comment) => (
-                                <CommentBig comment={comment} />
+                            {comments.map((comment, idx) => (
+                                <CommentBig key={idx} comment={comment} />
                             ))}
                         </Col>
                     </Row>

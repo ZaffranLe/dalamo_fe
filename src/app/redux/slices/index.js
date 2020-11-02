@@ -3,6 +3,7 @@ import compare from "./compare";
 import login from "./login";
 import product from "./product";
 import category from "./category";
+import brand from "./brand";
 import cart from "./cart";
 import comment from "./comment";
 
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     login,
     product,
     category,
+    brand,
     cart,
     comment,
 });
