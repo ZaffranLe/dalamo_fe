@@ -24,16 +24,13 @@ const { reducer, actions } = brand;
 export const { setBrands, setIsLoading } = actions;
 
 function fetchBrands(currentBrands = []) {
-    const _fetchApi = () => {
-        return axiosClient.get("/client/brand");
-    }
 
     return async (dispatch) => {
         try {
             if (currentBrands.length === 0) {
                 dispatch(setIsLoading(true));
             }
-            const data = await _fetchApi();
+            const data = await axiosClient.get("/client/brand");;
             dispatch(setBrands(data));
             dispatch(setIsLoading(false));
         } catch (e) {

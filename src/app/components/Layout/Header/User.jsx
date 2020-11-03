@@ -76,14 +76,16 @@ function UserHeader(props) {
                     title={
                         <>
                             <span>
-                                Tìm theo hãng <DownOutlined />
+                                Tìm theo hãng sản xuất <DownOutlined />
                             </span>
                         </>
                     }
                     key="Brand"
                     icon={<DingdingOutlined />}
                 >
-                    <Menu.Item>Tìm tất cả các hãng</Menu.Item>
+                    <Menu.Item>
+                        <Link to="/brand">Tìm tất cả các hãng</Link>
+                    </Menu.Item>
                     <Divider>Một số hãng nổi bật</Divider>
                     {brands.slice(0, 10).map((brand, idx) => (
                         <Menu.Item key={brand["id"]}>{brand["name"]}</Menu.Item>
