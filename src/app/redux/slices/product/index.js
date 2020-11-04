@@ -3,6 +3,7 @@ import axiosClient from "../../../utils/common/axiosClient";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initState = {
+    products: [],
     hotProducts: [],
     newProducts: [],
     newArrivalProducts: [],
@@ -15,6 +16,9 @@ const homePage = createSlice({
     reducers: {
         setHotProducts: (state, action) => {
             state.hotProducts = action.payload;
+        },
+        setProducts: (state, action) => {
+            state.products = action.payload;
         },
         setNewProducts: (state, action) => {
             state.newProducts = action.payload;
@@ -29,7 +33,26 @@ const homePage = createSlice({
 });
 
 const { reducer, actions } = homePage;
-export const { setHotProducts, setNewArrivalProducts, setNewProducts, setIsLoading } = actions;
+export const { setProducts, setHotProducts, setNewArrivalProducts, setNewProducts, setIsLoading } = actions;
+
+function fetchProducts(currentProducts = []) {
+    const _fetchApi = () => {
+        return axiosClient.get("/client/product");
+    }
+
+    return async (dispatch) => {
+        try {
+            if (currentProducts.length === 0) {
+                dispatch(setIsLoading(true));
+            }
+            const data = await _fetchApi();
+            dispatch(setProducts(data));
+            dispatch(setIsLoading(false));
+        } catch (e) {
+            console.error(e);
+        }
+    };
+}
 
 function fetchHotProducts(currentProducts = []) {
     const _fetchApi = () => {
@@ -89,6 +112,7 @@ function fetchNewArrivalProducts(currentProducts = []) {
 }
 
 export {
+    fetchProducts,
     fetchHotProducts,
     fetchNewProducts,
     fetchNewArrivalProducts,

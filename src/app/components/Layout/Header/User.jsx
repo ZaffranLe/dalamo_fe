@@ -9,6 +9,7 @@ import {
     InboxOutlined,
     DingdingOutlined,
     SearchOutlined,
+    ArrowRightOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input, Divider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,7 +63,15 @@ function UserHeader(props) {
                     icon={<UnorderedListOutlined />}
                 >
                     {categories.map((category, idx) => (
-                        <Menu.Item key={category["id"]}>{category["name"]}</Menu.Item>
+                        <Menu.Item key={category["id"]}>
+                            <Link
+                                to={{
+                                    pathname: `/product/${category["slug"]}.${category["id"]}`,
+                                }}
+                            >
+                                {category["name"]}
+                            </Link>
+                        </Menu.Item>
                     ))}
                 </Menu.SubMenu>
                 <Menu.Item className="padding-menu" key="HomePage" icon={<HomeOutlined />}>
@@ -76,7 +85,7 @@ function UserHeader(props) {
                     title={
                         <>
                             <span>
-                                Tìm theo hãng sản xuất <DownOutlined />
+                                Tìm theo hãng <DownOutlined />
                             </span>
                         </>
                     }
@@ -84,11 +93,19 @@ function UserHeader(props) {
                     icon={<DingdingOutlined />}
                 >
                     <Menu.Item>
-                        <Link to="/brand">Tìm tất cả các hãng</Link>
+                        <Link to="/brand">Xem tất cả</Link>
                     </Menu.Item>
-                    <Divider>Một số hãng nổi bật</Divider>
+                    <Divider>Thương hiệu nổi bật</Divider>
                     {brands.slice(0, 10).map((brand, idx) => (
-                        <Menu.Item key={brand["id"]}>{brand["name"]}</Menu.Item>
+                        <Menu.Item key={brand["id"]}>
+                            <Link
+                                to={{
+                                    pathname: `/brand/${brand["slug"]}.${brand["id"]}`,
+                                }}
+                            >
+                                {brand["name"]}
+                            </Link>
+                        </Menu.Item>
                     ))}
                 </Menu.SubMenu>
 
@@ -127,7 +144,10 @@ function UserHeader(props) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
+                                <ShoppingTwoTone
+                                    twoToneColor="#6da9f7"
+                                    className="icon--non-margin"
+                                />
                             </Badge>
                         </Tooltip>
                     </Link>

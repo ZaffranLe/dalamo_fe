@@ -1,33 +1,78 @@
-import { Col, PageHeader, Row, Input } from "antd";
-import React, { useEffect } from "react";
+import { Col, PageHeader, Row, Input, Button, Space, Skeleton } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BrandCardGrid from "../../components/Brand/brand-card-grid";
+import { fetchBrands } from "../../redux/slices/brand";
 
-function Brand(props) {
-    const { brands, isLoading } = useSelector(state => state.brand);
+function Brand({ match }) {
+    const { brands, isLoading } = useSelector((state) => state.brand);
     const dispatch = useDispatch();
+    const [searchChar, setSearchChar] = useState("");
+
+    const alphabets = [];
+    for (let i = 0; i < 26; i++) {
+        alphabets.push(String.fromCharCode(i + 65));
+    }
 
     useEffect(() => {
-
+        document.title = "Thương hiệu";
+        dispatch(fetchBrands(brands));
     }, []);
+
+    const searchByChar = (char) => {
+        setSearchChar(char);
+    };
+
+    const sortedBrands = useMemo(() => {
+        const list = JSON.parse(JSON.stringify(brands))
+            .filter((brand) =>
+                searchChar ? brand.name.toLowerCase()[0] == searchChar.toLowerCase() : true
+            )
+            .sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                return 0;
+            });
+        return list;
+    }, [searchChar, brands]);
 
     return (
         <>
             <Row>
-                <Col span={16} offset={4}>
+                <Col span={18} offset={3}>
                     <Row>
                         <Col span={24}>
-                            <PageHeader title="Hãng sản xuất" ghost={false} />
+                            <PageHeader title="Danh sách thương hiệu" ghost={false} />
                         </Col>
                     </Row>
                     <Row className="mb-15">
-                        <Col span={8}>
-                            <Input.Search placeholder="Tìm kiếm theo tên" />
+                        <Col span={24}>
+                            <h3>Tất cả thương hiệu</h3>
+                            <Space>
+                                {alphabets.map((char, idx) => (
+                                    <Button
+                                        onClick={() => searchByChar(char)}
+                                        type="link"
+                                        key={idx}
+                                    >
+                                        {char}
+                                    </Button>
+                                ))}
+                                <Button onClick={() => searchByChar("")} type="link">
+                                    All
+                                </Button>
+                            </Space>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={24}>
-                            <BrandCardGrid data={brands} />
+                            <Skeleton active loading={isLoading}>
+                                <BrandCardGrid data={sortedBrands} />
+                            </Skeleton>
                         </Col>
                     </Row>
                 </Col>

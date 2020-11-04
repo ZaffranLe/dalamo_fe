@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button, Col, Row, Skeleton } from "antd";
 import Carousel from "./carousel";
@@ -11,6 +11,10 @@ import "./Home.scss";
 function HomePage(props) {
     const { hotProducts, isLoading } = useSelector((state) => state.product);
 
+    useEffect(() => {
+        document.title = "Trang chủ";
+    }, []);
+    
     return (
         <>
             <Row>
