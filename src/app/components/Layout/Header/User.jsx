@@ -92,10 +92,12 @@ function UserHeader(props) {
                     key="Brand"
                     icon={<DingdingOutlined />}
                 >
-                    <Menu.Item>
+                    <Menu.Item key="all">
                         <Link to="/brand">Xem tất cả</Link>
                     </Menu.Item>
-                    <Divider>Thương hiệu nổi bật</Divider>
+                    <Menu.Item key="divider">
+                        <Divider>Thương hiệu nổi bật</Divider>
+                    </Menu.Item>
                     {brands.slice(0, 10).map((brand, idx) => (
                         <Menu.Item key={brand["id"]}>
                             <Link
@@ -144,10 +146,7 @@ function UserHeader(props) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone
-                                    twoToneColor="#6da9f7"
-                                    className="icon--non-margin"
-                                />
+                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
                             </Badge>
                         </Tooltip>
                     </Link>
