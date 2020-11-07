@@ -3,7 +3,12 @@ import { Row, Col, PageHeader, Divider, Checkbox, Select } from "antd";
 import ProductCardGrid from "../../components/Product/product-card-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../redux/slices/product";
-import { SortAscendingOutlined, SortDescendingOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
+import {
+    SortAscendingOutlined,
+    SortDescendingOutlined,
+    RiseOutlined,
+    FallOutlined,
+} from "@ant-design/icons";
 import qs from "query-string";
 import { Link } from "react-router-dom";
 
@@ -46,7 +51,6 @@ function Product(props) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedBrand, setSelectedBrand] = useState("");
     const [processedProducts, setProcessedProducts] = useState([]);
-    const [sortValue, setSortValue] = useState("");
 
     useEffect(() => {
         dispatch(fetchProducts(products));
@@ -58,16 +62,20 @@ function Product(props) {
         },
         history,
         location,
-        location: { search }
+        location: { search },
     } = props;
 
     useEffect(() => {
         let listProduct = [...products];
         if (selectedBrand) {
-            listProduct = listProduct.filter((product) => product["brandId"] == selectedBrand["id"]);
+            listProduct = listProduct.filter(
+                (product) => product["brandId"] == selectedBrand["id"]
+            );
         }
         if (selectedCategory) {
-            listProduct = listProduct.filter((product) => product["categoryId"] == selectedCategory["id"]);
+            listProduct = listProduct.filter(
+                (product) => product["categoryId"] == selectedCategory["id"]
+            );
         }
 
         const searchObj = qs.parse(search);
@@ -84,10 +92,14 @@ function Product(props) {
                 listProduct = listProduct.sort((p1, p2) => parseInt(p2.price) - parseInt(p1.price));
                 break;
             case SORT_VALUES.ASC_NAME:
-                listProduct = listProduct.sort((p1, p2) => (p1.name < p2.name ? -1 : p1.name > p2.name ? 1 : 0));
+                listProduct = listProduct.sort((p1, p2) =>
+                    p1.name < p2.name ? -1 : p1.name > p2.name ? 1 : 0
+                );
                 break;
             case SORT_VALUES.DESC_NAME:
-                listProduct = listProduct.sort((p1, p2) => (p1.name > p2.name ? -1 : p1.name < p2.name ? 1 : 0));
+                listProduct = listProduct.sort((p1, p2) =>
+                    p1.name > p2.name ? -1 : p1.name < p2.name ? 1 : 0
+                );
                 break;
             default:
                 break;
@@ -99,14 +111,14 @@ function Product(props) {
     useEffect(() => {
         if (brandSlug) {
             const [slug, id] = brandSlug.split(".");
-            const brand = brands.find((data) => data["id"] == id);
+            const brand = brands.find((data) => data["id"] == id && data["slug"] == slug);
             if (brand) {
                 setSelectedBrand(brand);
                 setSelectedCategory("");
             }
         } else if (categorySlug) {
             const [slug, id] = categorySlug.split(".");
-            const category = categories.find((data) => data["id"] == id);
+            const category = categories.find((data) => data["id"] == id && data["slug"] == slug);
             if (category) {
                 setSelectedCategory(category);
                 setSelectedBrand("");
@@ -154,7 +166,10 @@ function Product(props) {
                                 <Row>
                                     {selectedCategory ? (
                                         <Col span={24}>
-                                            <Checkbox checked={true} onClick={handleChangeCategory("")}>
+                                            <Checkbox
+                                                checked={true}
+                                                onClick={handleChangeCategory("")}
+                                            >
                                                 {selectedCategory["name"]}
                                             </Checkbox>
                                         </Col>
@@ -162,7 +177,10 @@ function Product(props) {
                                         <>
                                             {categories.map((c) => (
                                                 <Col key={c["id"]} span={24}>
-                                                    <Checkbox checked={false} onChange={handleChangeCategory(c)}>
+                                                    <Checkbox
+                                                        checked={false}
+                                                        onChange={handleChangeCategory(c)}
+                                                    >
                                                         {c["name"]}
                                                     </Checkbox>
                                                 </Col>
@@ -182,7 +200,10 @@ function Product(props) {
                                     <>
                                         {brands.map((b) => (
                                             <Col key={b["id"]} span={24}>
-                                                <Checkbox checked={false} onChange={handleChangeBrand(b)}>
+                                                <Checkbox
+                                                    checked={false}
+                                                    onChange={handleChangeBrand(b)}
+                                                >
                                                     {b["name"]}
                                                 </Checkbox>
                                             </Col>
@@ -201,8 +222,15 @@ function Product(props) {
                                         // onChange={handleChangeSort}
                                     >
                                         {SORT_MODES.map((mode) => (
-                                            <Select.Option key={mode["value"]} value={mode["value"]}>
-                                                <Link to={`${location.pathname}?sort=${mode["value"]}`}>{mode["icon"]} {mode["text"]}</Link>
+                                            <Select.Option
+                                                key={mode["value"]}
+                                                value={mode["value"]}
+                                            >
+                                                <Link
+                                                    to={`${location.pathname}?sort=${mode["value"]}`}
+                                                >
+                                                    {mode["icon"]} {mode["text"]}
+                                                </Link>
                                             </Select.Option>
                                         ))}
                                     </Select>

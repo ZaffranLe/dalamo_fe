@@ -31,7 +31,7 @@ function Routes() {
                 <LayoutRoute exact path="/brand/:brandSlug" component={Product} />
                 <LayoutRoute exact path="/product" component={Product} />
                 <LayoutRoute exact path="/product/:categorySlug" component={Product} />
-                <LayoutRoute exact path="/product/detail/:slug" component={ProductDetail} />
+                <LayoutRoute exact path="/product/detail/:productSlug" component={ProductDetail} />
                 <LayoutRoute exact path="/" component={HomePage} />
                 <Route component={NotFound} />
             </Switch>

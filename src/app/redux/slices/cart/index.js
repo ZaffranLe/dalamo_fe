@@ -13,11 +13,17 @@ const cart = createSlice({
             state.products = action.payload;
         },
         addProduct: (state, action) => {
-            const existProduct = state.products.find(product => product.id === action.payload.id);
+            const existProduct = state.products.find(
+                (product) => product.id === action.payload.product.id
+            );
+            const quantity = parseInt(action.payload.quantity);
             if (existProduct) {
-                existProduct.cartQuantity += 1;
+                existProduct.cartQuantity += quantity;
             } else {
-                state.products.push({ ...action.payload, cartQuantity: 1 });
+                state.products.push({
+                    ...action.payload.product,
+                    cartQuantity: quantity,
+                });
                 toast.success("Thêm sản phẩm vào giỏ hàng thành công.");
             }
         },
@@ -48,6 +54,12 @@ function changeProductQuantity(product, newQuantity) {
     };
 }
 
-export { refreshCart, changeProductQuantity };
+function addProductToCart(product, quantity = 1) {
+    return (dispatch) => {
+        dispatch(addProduct({ product, quantity }));
+    };
+}
+
+export { refreshCart, changeProductQuantity, addProductToCart };
 
 export default reducer;

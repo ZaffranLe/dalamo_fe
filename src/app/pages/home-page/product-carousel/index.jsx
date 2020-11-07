@@ -6,12 +6,13 @@ import PropTypes from "prop-types";
 import { RetweetOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { addProductToCompare } from "../../../redux/slices/compare";
-import { addProduct as addProductToCart } from "../../../redux/slices/cart";
+import { addProductToCart } from "../../../redux/slices/cart";
+import { useHistory } from "react-router-dom";
 
 function ProductCarousel(props) {
     const dispatch = useDispatch();
+    const history = useHistory();
     const { products } = props;
-
     const handleAddCompareProduct = (product) => {
         dispatch(addProductToCompare(product));
     };
@@ -20,9 +21,19 @@ function ProductCarousel(props) {
         dispatch(addProductToCart(product));
     };
 
+    const handleViewProduct = (product) => {
+        history.push(`/product/detail/${product["slug"]}.${product["id"]}`);
+    };
+
     return (
         <Col span={12}>
-            <Carousel speed={2000} autoplay={true} autoplaySpeed={10000} pauseOnHover={false} dots={false}>
+            <Carousel
+                speed={2000}
+                autoplay={true}
+                autoplaySpeed={10000}
+                pauseOnHover={false}
+                dots={false}
+            >
                 {products.map((product) => (
                     <div key={product["id"]}>
                         <Row>
@@ -39,18 +50,31 @@ function ProductCarousel(props) {
                                         backgroundColor: "white",
                                     }}
                                 >
-                                    <Col span={14}>
-                                        <img src={PlaceHolderImg} className="product-card__img" alt="Product img" />
+                                    <Col span={14} onClick={() => handleViewProduct(product)}>
+                                        <img
+                                            src={PlaceHolderImg}
+                                            className="product-card__img"
+                                            alt="Product img"
+                                        />
                                     </Col>
                                     <Col span={10}>
-                                        <h5 className="txt--uppercase txt--dark-olive txt--ellipsis txt--ellipsis-1">{product["categoryName"] || product["brandName"]}</h5>
-                                        <h4 className="txt--ellipsis txt--ellipsis-3">{product["name"]}</h4>
-                                        <h4 className="txt--dark-olive">
-                                            {formatVietnameseCurrency(product["price"])}
-                                        </h4>
-                                        <p className="txt--ellipsis txt--ellipsis-5" style={{ marginTop: 10 }}>
-                                            {product["description"]}
-                                        </p>
+                                        <div onClick={() => handleViewProduct(product)}>
+                                            <h5 className="txt--uppercase txt--dark-olive txt--ellipsis txt--ellipsis-1">
+                                                {product["categoryName"] || product["brandName"]}
+                                            </h5>
+                                            <h4 className="txt--ellipsis txt--ellipsis-3">
+                                                {product["name"]}
+                                            </h4>
+                                            <h4 className="txt--dark-olive">
+                                                {formatVietnameseCurrency(product["price"])}
+                                            </h4>
+                                            <p
+                                                className="txt--ellipsis txt--ellipsis-5"
+                                                style={{ marginTop: 10 }}
+                                            >
+                                                {product["description"]}
+                                            </p>
+                                        </div>
                                         <Button
                                             onClick={() => handleAddProductToCart(product)}
                                             className="bg--dark-olive txt--uppercase"

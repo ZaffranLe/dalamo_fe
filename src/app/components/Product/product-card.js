@@ -6,9 +6,10 @@ import PlaceHolderImg from "../../assets/img/product-placeholder.png";
 import PlaceHolderImg2 from "../../assets/img/product-placeholder-2.png";
 import { useDispatch } from "react-redux";
 import { addProductToCompare } from "../../redux/slices/compare";
-import { addProduct as addProductToCart } from "../../redux/slices/cart";
+import { addProductToCart } from "../../redux/slices/cart";
 import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/common";
 import "./Product.scss";
+import { Link } from "react-router-dom";
 function ProductCard(props) {
     const { product } = props;
     const carousel = useRef(null);
@@ -42,10 +43,18 @@ function ProductCard(props) {
                 <div style={{ width: "100%", position: "relative" }}>
                     <Carousel speed={500} ref={carousel}>
                         <div>
-                            <img className="product-card__img" alt="Placeholder 1" src={PlaceHolderImg} />
+                            <img
+                                className="product-card__img"
+                                alt="Placeholder 1"
+                                src={PlaceHolderImg}
+                            />
                         </div>
                         <div>
-                            <img className="product-card__img" alt="Placeholder 2" src={PlaceHolderImg2} />
+                            <img
+                                className="product-card__img"
+                                alt="Placeholder 2"
+                                src={PlaceHolderImg2}
+                            />
                         </div>
                     </Carousel>
                     <div className="custom-overlay" style={{ marginTop: 10, marginLeft: 10 }}>
@@ -71,7 +80,11 @@ function ProductCard(props) {
                                 />
                             </Tooltip>
                             <Tooltip title="Xem chi tiết">
-                                <Button size="large" shape="circle" icon={<EyeTwoTone />} />
+                                <Link to={`/product/detail/${product["slug"]}.${product["id"]}`}>
+                                    <Button size="large" shape="circle">
+                                        <EyeTwoTone />
+                                    </Button>
+                                </Link>
                             </Tooltip>
                             <Tooltip title="So sánh sản phẩm">
                                 <Button
@@ -95,7 +108,9 @@ function ProductCard(props) {
                 {Boolean(product["isDiscount"]) && (
                     <span>
                         <span>
-                            {formatVietnameseCurrency(calcDiscountPrice(product["price"], product["discountPercent"]))}
+                            {formatVietnameseCurrency(
+                                calcDiscountPrice(product["price"], product["discountPercent"])
+                            )}
                         </span>
                         {" - "}
                     </span>

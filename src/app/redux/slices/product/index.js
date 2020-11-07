@@ -8,6 +8,7 @@ const initState = {
     newProducts: [],
     newArrivalProducts: [],
     isLoading: false,
+    detailProduct: null,
 };
 
 const homePage = createSlice({
@@ -29,16 +30,26 @@ const homePage = createSlice({
         setIsLoading: (state, action) => {
             state.isLoading = action.payload;
         },
+        setDetailProduct: (state, action) => {
+            state.detailProduct = action.payload;
+        },
     },
 });
 
 const { reducer, actions } = homePage;
-export const { setProducts, setHotProducts, setNewArrivalProducts, setNewProducts, setIsLoading } = actions;
+export const {
+    setProducts,
+    setHotProducts,
+    setNewArrivalProducts,
+    setNewProducts,
+    setIsLoading,
+    setDetailProduct,
+} = actions;
 
 function fetchProducts(currentProducts = []) {
     const _fetchApi = () => {
         return axiosClient.get("/client/product");
-    }
+    };
 
     return async (dispatch) => {
         try {
@@ -54,10 +65,26 @@ function fetchProducts(currentProducts = []) {
     };
 }
 
+function fetchProduct(id) {
+    return async dispatch => {
+        try {
+            dispatch(setIsLoading(true));
+            let data = await axiosClient.get(`/client/product/${id}`);
+            if (Object.keys(data).length === 0) {
+                data = null;
+            }
+            dispatch(setDetailProduct(data));
+            dispatch(setIsLoading(false));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+}
+
 function fetchHotProducts(currentProducts = []) {
     const _fetchApi = () => {
         return axiosClient.get("/client/product");
-    }
+    };
 
     return async (dispatch) => {
         try {
@@ -76,7 +103,7 @@ function fetchHotProducts(currentProducts = []) {
 function fetchNewProducts(currentProducts = []) {
     const _fetchApi = () => {
         return axiosClient.get("/client/product");
-    }
+    };
 
     return async (dispatch) => {
         try {
@@ -95,7 +122,7 @@ function fetchNewProducts(currentProducts = []) {
 function fetchNewArrivalProducts(currentProducts = []) {
     const _fetchApi = () => {
         return axiosClient.get("/client/product");
-    }
+    };
 
     return async (dispatch) => {
         try {
@@ -111,11 +138,6 @@ function fetchNewArrivalProducts(currentProducts = []) {
     };
 }
 
-export {
-    fetchProducts,
-    fetchHotProducts,
-    fetchNewProducts,
-    fetchNewArrivalProducts,
-}
+export { fetchProducts, fetchHotProducts, fetchNewProducts, fetchNewArrivalProducts, fetchProduct };
 
 export default reducer;
