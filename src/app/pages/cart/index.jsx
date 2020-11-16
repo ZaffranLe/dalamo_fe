@@ -1,15 +1,24 @@
-import { Alert, Button, Card, Col, Divider, Input, PageHeader, Row, Table, Tooltip } from "antd";
-import React, { useEffect, useMemo } from "react";
+import { Alert, Button, Col, Divider, Input, PageHeader, Row, Table, Tooltip } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
 import { PlusOutlined, MinusOutlined, DeleteFilled, QuestionOutlined } from "@ant-design/icons";
 import { changeProductQuantity, removeProduct } from "../../redux/slices/cart";
 import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/common";
 import { openModal as openLoginModal } from "../../redux/slices/login";
+import produce from "immer";
 
 function Cart(props) {
     const { products } = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+
+    const [state, setState] = useState({
+        name: "",
+        phone: "",
+        address: "",
+        note: "",
+        totalPrice: 0
+    })
 
     useEffect(() => {
         document.title = "Giỏ hàng";
@@ -34,6 +43,13 @@ function Cart(props) {
         return price;
     }, [products]);
 
+    useEffect(() => {
+        const newState = produce(state, draft => {
+            draft["totalPrice"] = discountPrice;
+        });
+        setState(newState);
+    }, [discountPrice]);
+
     const plusQuantity = (product) => {
         const currentQuantity = parseInt(product["cartQuantity"]);
         dispatch(changeProductQuantity(product, currentQuantity + 1));
@@ -53,6 +69,24 @@ function Cart(props) {
     const handleOpenLoginModal = (key) => {
         dispatch(openLoginModal(key));
     };
+
+    const handleChangeReceiptInfo = name => e => {
+        const newState = produce(state, draft => {
+            draft[name] = e.target.value;
+        });
+        setState(newState);
+    }
+
+    const handlePhoneKeyPress = e => {
+        if (isNaN(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    const handleSubmitCart = () => {
+        console.log(products);
+        console.log(state);
+    }
 
     const columns = [
         {
@@ -79,10 +113,7 @@ function Cart(props) {
                             <span>
                                 <span className="text-bold">
                                     {formatVietnameseCurrency(
-                                        calcDiscountPrice(
-                                            record["price"],
-                                            record["discountPercent"]
-                                        )
+                                        calcDiscountPrice(record["price"], record["discountPercent"])
                                     )}
                                 </span>
                                 {" - "}
@@ -95,18 +126,8 @@ function Cart(props) {
                     <p className="mt-10">
                         <label>Số lượng:</label>
                         <Input
-                            prefix={
-                                <Button
-                                    onClick={() => minusQuantity(record)}
-                                    icon={<MinusOutlined />}
-                                />
-                            }
-                            suffix={
-                                <Button
-                                    onClick={() => plusQuantity(record)}
-                                    icon={<PlusOutlined />}
-                                />
-                            }
+                            prefix={<Button onClick={() => minusQuantity(record)} icon={<MinusOutlined />} />}
+                            suffix={<Button onClick={() => plusQuantity(record)} icon={<PlusOutlined />} />}
                             min={1}
                             className="text-center"
                             style={{ width: 125 }}
@@ -136,10 +157,7 @@ function Cart(props) {
                                 message={
                                     <span>
                                         Đã có tài khoản?{" "}
-                                        <Button
-                                            onClick={() => handleOpenLoginModal("login")}
-                                            type="link"
-                                        >
+                                        <Button onClick={() => handleOpenLoginModal("login")} type="link">
                                             Đăng nhập
                                         </Button>
                                     </span>
@@ -149,10 +167,45 @@ function Cart(props) {
                     </Row>
                     <Row className="mt-25" gutter={25}>
                         <Col span={14}>
-                            <Table dataSource={products} columns={columns} />
+                            <Table key="id" dataSource={products} columns={columns} />
                         </Col>
                         <Col span={10}>
                             <Row style={{ borderBottom: "2px solid black" }}>
+                                <Col span={24}>
+                                    <h3>
+                                        <b>Thông tin giao hàng</b>
+                                    </h3>
+                                </Col>
+                            </Row>
+                            <Row className="mt-10" gutter={10}>
+                                <Col span={12}>
+                                    <label>
+                                        Họ tên <span className="text-red text-bold">*</span>
+                                    </label>
+                                    <Input value={state["name"]} onChange={handleChangeReceiptInfo("name")} />
+                                </Col>
+                                <Col span={12}>
+                                    <label>
+                                        Số điện thoại <span className="text-red text-bold">*</span>
+                                    </label>
+                                    <Input value={state["phone"]} maxLength={12} onKeyPress={handlePhoneKeyPress} onChange={handleChangeReceiptInfo("phone")} />
+                                </Col>
+                            </Row>
+                            <Row className="mt-10" gutter={10}>
+                                <Col span={24}>
+                                    <label>
+                                        Địa chỉ <span className="text-red text-bold">*</span>
+                                    </label>
+                                    <Input value={state["address"]} onChange={handleChangeReceiptInfo("address")} />
+                                </Col>
+                            </Row>
+                            <Row className="mt-10">
+                                <Col span={24}>
+                                    <label>Ghi chú</label>
+                                    <Input.TextArea value={state["note"]} onChange={handleChangeReceiptInfo("note")} />
+                                </Col>
+                            </Row>
+                            <Row className="mt-15" style={{ borderBottom: "2px solid black" }}>
                                 <Col span={24}>
                                     <h3>
                                         <b>Thông tin thanh toán</b>
@@ -179,23 +232,16 @@ function Cart(props) {
                             <Row>
                                 <Col span={16}>
                                     <h4>
-                                        THÀNH TIỀN{" "}
-                                        <Tooltip title="Thuế giá trị gia tăng sẽ được áp dụng khi thanh toán hoá đơn">
-                                            <Button
-                                                size="small"
-                                                shape="circle"
-                                                icon={<QuestionOutlined />}
-                                            />
-                                        </Tooltip>
+                                        THÀNH TIỀN
                                     </h4>
                                 </Col>
                                 <Col span={8} className="text-red text-bold text-right">
-                                    {formatVietnameseCurrency(discountPrice)}
+                                    {formatVietnameseCurrency(state["totalPrice"])}
                                 </Col>
                             </Row>
                             <Row className="mt-20">
                                 <Col span={24}>
-                                    <Button block className="bg-green" size="large">
+                                    <Button block className="bg-green" size="large" onClick={handleSubmitCart}>
                                         XÁC NHẬN ĐƠN HÀNG
                                     </Button>
                                 </Col>
