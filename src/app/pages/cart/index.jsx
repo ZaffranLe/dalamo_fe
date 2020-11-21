@@ -3,13 +3,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
 import { PlusOutlined, MinusOutlined, DeleteFilled, QuestionOutlined } from "@ant-design/icons";
-import { changeProductQuantity, removeProduct } from "../../redux/slices/cart";
+import { changeProductQuantity, removeProduct, submitOrder } from "../../redux/slices/cart";
 import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/common";
 import { openModal as openLoginModal } from "../../redux/slices/login";
 import produce from "immer";
+import { toast } from "react-toastify";
 
 function Cart(props) {
-    const { products } = useSelector((state) => state.cart);
+    const { products, isLoading } = useSelector((state) => state.cart);
     const dispatch = useDispatch();
 
     const [state, setState] = useState({
@@ -17,8 +18,8 @@ function Cart(props) {
         phone: "",
         address: "",
         note: "",
-        totalPrice: 0
-    })
+        totalPrice: 0,
+    });
 
     useEffect(() => {
         document.title = "Giỏ hàng";
@@ -44,7 +45,7 @@ function Cart(props) {
     }, [products]);
 
     useEffect(() => {
-        const newState = produce(state, draft => {
+        const newState = produce(state, (draft) => {
             draft["totalPrice"] = discountPrice;
         });
         setState(newState);
@@ -70,23 +71,35 @@ function Cart(props) {
         dispatch(openLoginModal(key));
     };
 
-    const handleChangeReceiptInfo = name => e => {
-        const newState = produce(state, draft => {
+    const handleChangeOrderInfo = (name) => (e) => {
+        const newState = produce(state, (draft) => {
             draft[name] = e.target.value;
         });
         setState(newState);
-    }
+    };
 
-    const handlePhoneKeyPress = e => {
+    const handlePhoneKeyPress = (e) => {
         if (isNaN(e.key)) {
             e.preventDefault();
         }
-    }
+    };
 
     const handleSubmitCart = () => {
-        console.log(products);
-        console.log(state);
-    }
+        const { name, phone, address } = state;
+        if (name && phone && address) {
+            const orderData = {
+                ...state,
+                products: products.map((p) => ({
+                    idProduct: p.id,
+                    quantity: p.cartQuantity,
+                    price: p.cartQuantity * parseInt(p.price),
+                })),
+            };
+            dispatch(submitOrder(orderData));
+        } else {
+            toast.error("Thông tin giao hàng cần được cung cấp đầy đủ!");
+        }
+    };
 
     const columns = [
         {
@@ -113,7 +126,10 @@ function Cart(props) {
                             <span>
                                 <span className="text-bold">
                                     {formatVietnameseCurrency(
-                                        calcDiscountPrice(record["price"], record["discountPercent"])
+                                        calcDiscountPrice(
+                                            record["price"],
+                                            record["discountPercent"]
+                                        )
                                     )}
                                 </span>
                                 {" - "}
@@ -126,8 +142,18 @@ function Cart(props) {
                     <p className="mt-10">
                         <label>Số lượng:</label>
                         <Input
-                            prefix={<Button onClick={() => minusQuantity(record)} icon={<MinusOutlined />} />}
-                            suffix={<Button onClick={() => plusQuantity(record)} icon={<PlusOutlined />} />}
+                            prefix={
+                                <Button
+                                    onClick={() => minusQuantity(record)}
+                                    icon={<MinusOutlined />}
+                                />
+                            }
+                            suffix={
+                                <Button
+                                    onClick={() => plusQuantity(record)}
+                                    icon={<PlusOutlined />}
+                                />
+                            }
                             min={1}
                             className="text-center"
                             style={{ width: 125 }}
@@ -157,7 +183,10 @@ function Cart(props) {
                                 message={
                                     <span>
                                         Đã có tài khoản?{" "}
-                                        <Button onClick={() => handleOpenLoginModal("login")} type="link">
+                                        <Button
+                                            onClick={() => handleOpenLoginModal("login")}
+                                            type="link"
+                                        >
                                             Đăng nhập
                                         </Button>
                                     </span>
@@ -167,7 +196,7 @@ function Cart(props) {
                     </Row>
                     <Row className="mt-25" gutter={25}>
                         <Col span={14}>
-                            <Table key="id" dataSource={products} columns={columns} />
+                            <Table rowKey="id" dataSource={products} columns={columns} />
                         </Col>
                         <Col span={10}>
                             <Row style={{ borderBottom: "2px solid black" }}>
@@ -182,13 +211,21 @@ function Cart(props) {
                                     <label>
                                         Họ tên <span className="text-red text-bold">*</span>
                                     </label>
-                                    <Input value={state["name"]} onChange={handleChangeReceiptInfo("name")} />
+                                    <Input
+                                        value={state["name"]}
+                                        onChange={handleChangeOrderInfo("name")}
+                                    />
                                 </Col>
                                 <Col span={12}>
                                     <label>
                                         Số điện thoại <span className="text-red text-bold">*</span>
                                     </label>
-                                    <Input value={state["phone"]} maxLength={12} onKeyPress={handlePhoneKeyPress} onChange={handleChangeReceiptInfo("phone")} />
+                                    <Input
+                                        value={state["phone"]}
+                                        maxLength={12}
+                                        onKeyPress={handlePhoneKeyPress}
+                                        onChange={handleChangeOrderInfo("phone")}
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-10" gutter={10}>
@@ -196,13 +233,19 @@ function Cart(props) {
                                     <label>
                                         Địa chỉ <span className="text-red text-bold">*</span>
                                     </label>
-                                    <Input value={state["address"]} onChange={handleChangeReceiptInfo("address")} />
+                                    <Input
+                                        value={state["address"]}
+                                        onChange={handleChangeOrderInfo("address")}
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-10">
                                 <Col span={24}>
                                     <label>Ghi chú</label>
-                                    <Input.TextArea value={state["note"]} onChange={handleChangeReceiptInfo("note")} />
+                                    <Input.TextArea
+                                        value={state["note"]}
+                                        onChange={handleChangeOrderInfo("note")}
+                                    />
                                 </Col>
                             </Row>
                             <Row className="mt-15" style={{ borderBottom: "2px solid black" }}>
@@ -231,9 +274,7 @@ function Cart(props) {
                             <Divider />
                             <Row>
                                 <Col span={16}>
-                                    <h4>
-                                        THÀNH TIỀN
-                                    </h4>
+                                    <h4>THÀNH TIỀN</h4>
                                 </Col>
                                 <Col span={8} className="text-red text-bold text-right">
                                     {formatVietnameseCurrency(state["totalPrice"])}
@@ -241,7 +282,13 @@ function Cart(props) {
                             </Row>
                             <Row className="mt-20">
                                 <Col span={24}>
-                                    <Button block className="bg-green" size="large" onClick={handleSubmitCart}>
+                                    <Button
+                                        loading={isLoading}
+                                        block
+                                        className="bg-green"
+                                        size="large"
+                                        onClick={handleSubmitCart}
+                                    >
                                         XÁC NHẬN ĐƠN HÀNG
                                     </Button>
                                 </Col>

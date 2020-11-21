@@ -1,12 +1,14 @@
 import { toast } from "react-toastify";
 import { createSlice } from "@reduxjs/toolkit";
+import axiosClient from "../../../utils/common/axiosClient";
 
 const initState = {
     products: [],
+    isLoading: false,
 };
 
 const cart = createSlice({
-    name: "category",
+    name: "cart",
     initialState: initState,
     reducers: {
         setProducts: (state, action) => {
@@ -35,11 +37,14 @@ const cart = createSlice({
         removeProduct: (state, action) => {
             state.products = state.products.filter((product) => product.id !== action.payload.id);
         },
+        setIsLoading: (state, action) => {
+            state.isLoading = action.payload;
+        },
     },
 });
 
 const { reducer, actions } = cart;
-export const { setProducts, addProduct, modifyProduct, removeProduct } = actions;
+export const { setProducts, addProduct, modifyProduct, removeProduct, setIsLoading } = actions;
 
 function refreshCart() {
     return (dispatch) => {
@@ -60,6 +65,28 @@ function addProductToCart(product, quantity = 1) {
     };
 }
 
-export { refreshCart, changeProductQuantity, addProductToCart };
+function submitOrder(data) {
+    return async (dispatch) => {
+        try {
+            dispatch(setIsLoading(true));
+            await axiosClient({
+                url: "/client/order-receipt",
+                method: "post",
+                data,
+            });
+            toast.success(
+                "Cảm ơn bạn đã ủng hộ Dalamo. Đơn hàng sẽ được nhanh chóng xác nhận và vận chuyển."
+            );
+            dispatch(setProducts([]));
+        } catch (e) {
+            console.error(e);
+            toast.error("Có lỗi xảy ra với hệ thống! Vui lòng thử lại sau.");
+        } finally {
+            dispatch(setIsLoading(false));
+        }
+    };
+}
+
+export { refreshCart, changeProductQuantity, addProductToCart, submitOrder };
 
 export default reducer;

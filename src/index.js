@@ -7,10 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "react-redux";
 import App from "./App";
 import store from "./app/redux/store";
+import { ToastContainer } from "react-toastify";
 
 ReactDOM.render(
     <Provider store={store}>
         <App />
+        <ToastContainer />
     </Provider>,
     document.getElementById("root")
 );

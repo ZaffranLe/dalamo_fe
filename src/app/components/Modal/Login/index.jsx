@@ -69,7 +69,7 @@ function LoginModal(props) {
                                     <Input.Password placeholder="Xác nhận mật khẩu" required />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 9, span: 4 }}>
-                                    <Button type="primary">Đăng nhập</Button>
+                                    <Button type="primary">Đăng ký</Button>
                                 </Form.Item>
                             </Form>
                         </Tabs.TabPane>
