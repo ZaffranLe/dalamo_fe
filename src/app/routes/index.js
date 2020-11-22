@@ -3,6 +3,7 @@ import { Router, BrowserRouter } from "react-router-dom";
 import { Switch, Redirect, Route } from "react-router";
 import NotFound from "../components/NotFound";
 import UserLayout from "../components/Layout/User.jsx";
+import jwt from "jsonwebtoken";
 const Brand = lazy(() => import("../pages/brand"));
 const HomePage = lazy(() => import("../pages/home-page"));
 const Cart = lazy(() => import("../pages/cart"));
@@ -10,11 +11,16 @@ const Product = lazy(() => import("../pages/product"));
 const ProductDetail = lazy(() => import("../pages/product/detail"));
 
 function LayoutRoute({ component: Component, ...rest }) {
+    const token = localStorage.getItem("token");
+    if (token) {
+        const tokenInfo = jwt.decode(token);
+        window.userInfo = tokenInfo["user"];
+    }
     return (
         <Route
             {...rest}
             render={(matchProps) => (
-                <UserLayout>
+                <UserLayout history={matchProps.history}>
                     <Component {...matchProps} />
                 </UserLayout>
             )}

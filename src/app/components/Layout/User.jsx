@@ -5,12 +5,11 @@ import UserFooter from "./Footer/User";
 import "./Layout.scss";
 import { FacebookOutlined, ArrowUpOutlined } from "@ant-design/icons";
 
-function UserLayout(props) {
-    const { user, children } = props;
+function UserLayout({children, history}) {
     return (
         <Layout className="wrapper">
             <Layout>
-                <UserHeader user={user} />
+                <UserHeader history={history} />
                 <Layout.Content className="wrapper-content bg-white">
                     {/* <Bread /> */}
                     <div id="main-container" className="main-content">

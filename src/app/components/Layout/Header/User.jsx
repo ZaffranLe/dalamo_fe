@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ShoppingTwoTone,
     DownOutlined,
@@ -17,24 +17,33 @@ import "./Header.scss";
 import Logo from "../../../assets/img/logo.png";
 import { Link } from "react-router-dom";
 import { openModal as openCompareModal } from "../../../redux/slices/compare";
-import { openModal as openLoginModal } from "../../../redux/slices/login";
+import { openModal as openLoginModal, logout } from "../../../redux/slices/login";
 import { fetchCategories } from "../../../redux/slices/category";
 import { fetchBrands } from "../../../redux/slices/brand";
 import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
+import jwt from "jsonwebtoken";
 
-function UserHeader(props) {
-    const { user } = props;
+function UserHeader({history}) {
     const dispatch = useDispatch();
     const productsCompare = useSelector((state) => state.compare.products);
     const productsCart = useSelector((state) => state.cart.products);
     const { categories } = useSelector((state) => state.category);
     const { brands } = useSelector((state) => state.brand);
+    const { loggedIn } = useSelector(state => state.login);
+
+    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCategories(categories));
         dispatch(fetchBrands(brands));
     }, []);
+
+    useEffect(() => {
+        if (loggedIn) {
+            setFlag(true);
+        }
+    }, [loggedIn]);
 
     const handleOpenCompareModal = () => {
         dispatch(openCompareModal());
@@ -43,6 +52,20 @@ function UserHeader(props) {
     const handleOpenLoginModal = (key) => {
         dispatch(openLoginModal(key));
     };
+
+    const handleLogout = () => {
+        dispatch(logout(history));
+    }
+
+    let user = null;
+    const token = window.localStorage.getItem("token");
+    if (window.userInfo) {
+        user = window.userInfo;
+    } else if (token) {
+        const tokenInfo = jwt.decode(tokenInfo);
+        window.userInfo = tokenInfo["user"];
+        user = tokenInfo["user"];
+    }
 
     return (
         <Layout.Header className="header fixed">
@@ -120,14 +143,14 @@ function UserHeader(props) {
                         title={
                             <>
                                 <span style={{ marginRight: 4 }}>Xin chào </span>
-                                <span className="username">{user["name"]}</span>
+                                <span className="username">{user["fullName"]}</span>
                                 <Avatar style={{ marginLeft: 8 }} src={Logo} />
                             </>
                         }
                     >
                         <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
                         <Menu.Item key="Orders">Danh sách đơn hàng</Menu.Item>
-                        <Menu.Item key="SignOut">Đăng xuất</Menu.Item>
+                        <Menu.Item key="SignOut" onClick={handleLogout}>Đăng xuất</Menu.Item>
                     </Menu.SubMenu>
                 ) : (
                     <Menu.SubMenu
