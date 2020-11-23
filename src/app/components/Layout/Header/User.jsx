@@ -23,6 +23,7 @@ import { fetchBrands } from "../../../redux/slices/brand";
 import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
 import jwt from "jsonwebtoken";
+import { getUserFromToken } from "../../../utils/common/common";
 
 function UserHeader({history}) {
     const dispatch = useDispatch();
@@ -57,15 +58,7 @@ function UserHeader({history}) {
         dispatch(logout(history));
     }
 
-    let user = null;
-    const token = window.localStorage.getItem("token");
-    if (window.userInfo) {
-        user = window.userInfo;
-    } else if (token) {
-        const tokenInfo = jwt.decode(tokenInfo);
-        window.userInfo = tokenInfo["user"];
-        user = tokenInfo["user"];
-    }
+    const user = getUserFromToken();
 
     return (
         <Layout.Header className="header fixed">
@@ -142,7 +135,7 @@ function UserHeader({history}) {
                         className="float-right padding-menu"
                         title={
                             <>
-                                <span style={{ marginRight: 4 }}>Xin chào </span>
+                                <span style={{ marginRight: 4 }}>Xin chào</span>
                                 <span className="username">{user["fullName"]}</span>
                                 <Avatar style={{ marginLeft: 8 }} src={Logo} />
                             </>

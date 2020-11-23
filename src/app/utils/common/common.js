@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 export const randomNumber = (min, max) => {
     return min + Math.trunc(Math.random() * (max - min));
 };
@@ -39,3 +41,19 @@ export const getSlug = (str) => {
     str = str.replace(/-+$/g, "");
     return str;
 };
+
+export const getUserFromToken = () => {
+    let userInfo = null;
+    const token = window.localStorage.getItem("token");
+    if (window.userInfo) {
+        userInfo = window.userInfo;
+    } else if (token) {
+        const tokenInfo = jwt.decode(tokenInfo);
+        const { user, exp } = tokenInfo;
+        const currentTime = new Date().getTime();
+        if (parseInt(exp) * 1000 > currentTime) {
+            userInfo = user;
+        }
+    }
+    return userInfo;
+}

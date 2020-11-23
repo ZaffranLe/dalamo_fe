@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Divider, Input, PageHeader, Row, Table, Tooltip } from "antd";
+import { Alert, Button, Col, Divider, Input, PageHeader, Row, Table, Form } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
@@ -8,18 +8,22 @@ import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/
 import { openModal as openLoginModal } from "../../redux/slices/login";
 import produce from "immer";
 import { toast } from "react-toastify";
+import { getUserFromToken } from "../../utils/common/common";
 
 function Cart(props) {
     const { products, isLoading } = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+    const user = getUserFromToken();
 
-    const [state, setState] = useState({
-        name: "",
-        phone: "",
-        address: "",
+    const [infoForm] = Form.useForm();
+
+    const initInfo = {
+        name: user ? user["fullName"] : "",
+        phone: user ? user["phone"] : "",
+        address: user ? user["address"] : "",
         note: "",
         totalPrice: 0,
-    });
+    };
 
     useEffect(() => {
         document.title = "Giỏ hàng";
@@ -45,10 +49,7 @@ function Cart(props) {
     }, [products]);
 
     useEffect(() => {
-        const newState = produce(state, (draft) => {
-            draft["totalPrice"] = discountPrice;
-        });
-        setState(newState);
+        infoForm.setFields([{ name: "totalPrice", value: discountPrice }]);
     }, [discountPrice]);
 
     const plusQuantity = (product) => {
@@ -71,34 +72,23 @@ function Cart(props) {
         dispatch(openLoginModal(key));
     };
 
-    const handleChangeOrderInfo = (name) => (e) => {
-        const newState = produce(state, (draft) => {
-            draft[name] = e.target.value;
-        });
-        setState(newState);
-    };
-
     const handlePhoneKeyPress = (e) => {
         if (isNaN(e.key)) {
             e.preventDefault();
         }
     };
 
-    const handleSubmitCart = () => {
-        const { name, phone, address } = state;
-        if (name && phone && address) {
-            const orderData = {
-                ...state,
-                products: products.map((p) => ({
-                    idProduct: p.id,
-                    quantity: p.cartQuantity,
-                    price: p.cartQuantity * parseInt(p.price),
-                })),
-            };
-            dispatch(submitOrder(orderData));
-        } else {
-            toast.error("Thông tin giao hàng cần được cung cấp đầy đủ!");
-        }
+    const handleSubmitCart = async () => {
+        const values = await infoForm.validateFields();
+        const orderData = {
+            ...values,
+            products: products.map((p) => ({
+                idProduct: p.id,
+                quantity: p.cartQuantity,
+                price: p.cartQuantity * parseInt(p.price),
+            })),
+        };
+        dispatch(submitOrder(orderData));
     };
 
     const columns = [
@@ -126,10 +116,7 @@ function Cart(props) {
                             <span>
                                 <span className="text-bold">
                                     {formatVietnameseCurrency(
-                                        calcDiscountPrice(
-                                            record["price"],
-                                            record["discountPercent"]
-                                        )
+                                        calcDiscountPrice(record["price"], record["discountPercent"])
                                     )}
                                 </span>
                                 {" - "}
@@ -142,18 +129,8 @@ function Cart(props) {
                     <p className="mt-10">
                         <label>Số lượng:</label>
                         <Input
-                            prefix={
-                                <Button
-                                    onClick={() => minusQuantity(record)}
-                                    icon={<MinusOutlined />}
-                                />
-                            }
-                            suffix={
-                                <Button
-                                    onClick={() => plusQuantity(record)}
-                                    icon={<PlusOutlined />}
-                                />
-                            }
+                            prefix={<Button onClick={() => minusQuantity(record)} icon={<MinusOutlined />} />}
+                            suffix={<Button onClick={() => plusQuantity(record)} icon={<PlusOutlined />} />}
                             min={1}
                             className="text-center"
                             style={{ width: 125 }}
@@ -178,20 +155,19 @@ function Cart(props) {
                     <Row>
                         <Col span={24}>
                             <PageHeader ghost={false} title="Giỏ hàng của bạn" />
-                            <Alert
-                                type="success"
-                                message={
-                                    <span>
-                                        Đã có tài khoản?{" "}
-                                        <Button
-                                            onClick={() => handleOpenLoginModal("login")}
-                                            type="link"
-                                        >
-                                            Đăng nhập
-                                        </Button>
-                                    </span>
-                                }
-                            />
+                            {!user && (
+                                <Alert
+                                    type="success"
+                                    message={
+                                        <span>
+                                            Đã có tài khoản?{" "}
+                                            <Button onClick={() => handleOpenLoginModal("login")} type="link">
+                                                Đăng nhập
+                                            </Button>
+                                        </span>
+                                    }
+                                />
+                            )}
                         </Col>
                     </Row>
                     <Row className="mt-25" gutter={25}>
@@ -206,93 +182,114 @@ function Cart(props) {
                                     </h3>
                                 </Col>
                             </Row>
-                            <Row className="mt-10" gutter={10}>
-                                <Col span={12}>
-                                    <label>
-                                        Họ tên <span className="text-red text-bold">*</span>
-                                    </label>
-                                    <Input
-                                        value={state["name"]}
-                                        onChange={handleChangeOrderInfo("name")}
-                                    />
-                                </Col>
-                                <Col span={12}>
-                                    <label>
-                                        Số điện thoại <span className="text-red text-bold">*</span>
-                                    </label>
-                                    <Input
-                                        value={state["phone"]}
-                                        maxLength={12}
-                                        onKeyPress={handlePhoneKeyPress}
-                                        onChange={handleChangeOrderInfo("phone")}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="mt-10" gutter={10}>
-                                <Col span={24}>
-                                    <label>
-                                        Địa chỉ <span className="text-red text-bold">*</span>
-                                    </label>
-                                    <Input
-                                        value={state["address"]}
-                                        onChange={handleChangeOrderInfo("address")}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="mt-10">
-                                <Col span={24}>
-                                    <label>Ghi chú</label>
-                                    <Input.TextArea
-                                        value={state["note"]}
-                                        onChange={handleChangeOrderInfo("note")}
-                                    />
-                                </Col>
-                            </Row>
-                            <Row className="mt-15" style={{ borderBottom: "2px solid black" }}>
-                                <Col span={24}>
-                                    <h3>
-                                        <b>Thông tin thanh toán</b>
-                                    </h3>
-                                </Col>
-                            </Row>
-                            <Row className="mt-25">
-                                <Col span={16}>
-                                    <h4>Tổng giá trị</h4>
-                                </Col>
-                                <Col span={8} className="text-red text-bold text-right">
-                                    {formatVietnameseCurrency(originalPrice)}
-                                </Col>
-                            </Row>
-                            <Row className="mt-10">
-                                <Col span={16}>
-                                    <h4>Khuyến mãi</h4>
-                                </Col>
-                                <Col span={8} className="text-red text-bold text-right">
-                                    {formatVietnameseCurrency(originalPrice - discountPrice)}
-                                </Col>
-                            </Row>
-                            <Divider />
-                            <Row>
-                                <Col span={16}>
-                                    <h4>THÀNH TIỀN</h4>
-                                </Col>
-                                <Col span={8} className="text-red text-bold text-right">
-                                    {formatVietnameseCurrency(state["totalPrice"])}
-                                </Col>
-                            </Row>
-                            <Row className="mt-20">
-                                <Col span={24}>
-                                    <Button
-                                        loading={isLoading}
-                                        block
-                                        className="bg-green"
-                                        size="large"
-                                        onClick={handleSubmitCart}
-                                    >
-                                        XÁC NHẬN ĐƠN HÀNG
-                                    </Button>
-                                </Col>
-                            </Row>
+                            <Form form={infoForm} initialValues={initInfo}>
+                                <Row className="mt-10" gutter={10}>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            name="name"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Xin vui lòng cho biết tên của bạn",
+                                                },
+                                            ]}
+                                        >
+                                            <label>
+                                                Họ tên <span className="text-red text-bold">*</span>
+                                            </label>
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={12}>
+                                        <Form.Item
+                                            name="phone"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Vui lòng không để trống số điện thoại",
+                                                },
+                                            ]}
+                                        >
+                                            <label>
+                                                Số điện thoại <span className="text-red text-bold">*</span>
+                                            </label>
+                                            <Input onKeyPress={handlePhoneKeyPress} />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row gutter={10}>
+                                    <Col span={24}>
+                                        <Form.Item
+                                            name="address"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: "Vui lòng không để trống địa chỉ giao hàng",
+                                                },
+                                            ]}
+                                        >
+                                            <label>
+                                                Địa chỉ <span className="text-red text-bold">*</span>
+                                            </label>
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={24}>
+                                        <Form.Item name="note">
+                                            <label>Ghi chú</label>
+                                            <Input.TextArea />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+                                <Row className="mt-15" style={{ borderBottom: "2px solid black" }}>
+                                    <Col span={24}>
+                                        <h3>
+                                            <b>Thông tin thanh toán</b>
+                                        </h3>
+                                    </Col>
+                                </Row>
+                                <Row className="mt-25">
+                                    <Col span={16}>
+                                        <h4>Tổng giá trị</h4>
+                                    </Col>
+                                    <Col span={8} className="text-red text-bold text-right">
+                                        {formatVietnameseCurrency(originalPrice)}
+                                    </Col>
+                                </Row>
+                                <Row className="mt-10">
+                                    <Col span={16}>
+                                        <h4>Khuyến mãi</h4>
+                                    </Col>
+                                    <Col span={8} className="text-red text-bold text-right">
+                                        {formatVietnameseCurrency(originalPrice - discountPrice)}
+                                    </Col>
+                                </Row>
+                                <Divider />
+                                <Row>
+                                    <Col span={16}>
+                                        <h4>THÀNH TIỀN</h4>
+                                    </Col>
+                                    <Col span={8} className="text-red text-bold text-right">
+                                        {formatVietnameseCurrency(infoForm.getFieldValue("totalPrice"))}
+                                    </Col>
+                                </Row>
+                                <Row className="mt-20">
+                                    <Col span={24}>
+                                        <Button
+                                            loading={isLoading}
+                                            block
+                                            className="bg-green"
+                                            size="large"
+                                            onClick={handleSubmitCart}
+                                        >
+                                            XÁC NHẬN ĐƠN HÀNG
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
                         </Col>
                     </Row>
                 </Col>
