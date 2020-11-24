@@ -93,6 +93,7 @@ function Cart(props) {
                     price: p.cartQuantity * parseInt(p.price),
                 })),
             };
+            console.log(orderData);
             dispatch(submitOrder(orderData));
         } else {
             toast.error("Giỏ hàng trống.");

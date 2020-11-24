@@ -26,7 +26,7 @@ import jwt from "jsonwebtoken";
 import { getUserFromToken } from "../../../utils/common/common";
 import ListReceiptModal from "../../Modal/Receipt";
 
-function UserHeader({history}) {
+function UserHeader({ history }) {
     const dispatch = useDispatch();
     const productsCompare = useSelector((state) => state.compare.products);
     const productsCart = useSelector((state) => state.cart.products);
@@ -50,22 +50,24 @@ function UserHeader({history}) {
 
     const handleLogout = () => {
         dispatch(logout(history));
-    }
+    };
 
     const openReceiptModal = () => {
         setReceiptModal(true);
-    }
+    };
 
     const closeReceiptModal = () => {
         setReceiptModal(false);
-    }
+    };
 
     const user = getUserFromToken();
 
     return (
         <Layout.Header className="header fixed">
             <div className="logo">
-                <img src={Logo} alt="Logo dalamo" style={{ maxWidth: "100%" }} />
+                <Link to="/">
+                    <img src={Logo} alt="Logo dalamo" style={{ maxWidth: "100%" }} />
+                </Link>
             </div>
             <Menu key="menu" id="header-menu" mode="horizontal" selectable={false}>
                 <Menu.SubMenu
@@ -144,8 +146,12 @@ function UserHeader({history}) {
                         }
                     >
                         <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
-                        <Menu.Item key="Orders" onClick={openReceiptModal}>Danh sách đơn hàng</Menu.Item>
-                        <Menu.Item key="SignOut" onClick={handleLogout}>Đăng xuất</Menu.Item>
+                        <Menu.Item key="Orders" onClick={openReceiptModal}>
+                            Danh sách đơn hàng
+                        </Menu.Item>
+                        <Menu.Item key="SignOut" onClick={handleLogout}>
+                            Đăng xuất
+                        </Menu.Item>
                     </Menu.SubMenu>
                 ) : (
                     <Menu.SubMenu

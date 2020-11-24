@@ -3,22 +3,26 @@ import { Modal, Button, Alert, Table } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { formatVietnameseCurrency } from "../../../utils/common/common";
-import { fetchReceipts } from "../../../redux/slices/receipt";
+import { fetchReceipts } from "../../../redux/slices/cart";
 import moment from "moment";
 
-function ListReceiptModal({open, onClose}) {
-    const { receipts, isLoading } = useSelector((state) => state.receipt);
+function ListReceiptModal({ open, onClose }) {
+    const { receipts, isLoading, isSucceed } = useSelector((state) => state.cart);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(fetchReceipts(receipts));
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        dispatch(fetchReceipts(receipts));
+    }, [isSucceed]);
 
     const columns = [
         {
             title: "Hoá đơn",
             key: "receipt",
-            render: (text, record) => "OR_" + String.format("%05d", record["id"]),
+            render: (text, record) => `OR_${record["id"]}`,
         },
         {
             title: "Khách hàng",
@@ -60,7 +64,7 @@ function ListReceiptModal({open, onClose}) {
     return (
         <Modal
             width="70%"
-            title="So sánh sản phẩm"
+            title="Danh sách hoá đơn mua hàng"
             visible={open}
             footer={[
                 <Button key="close" onClick={onClose}>
@@ -70,7 +74,7 @@ function ListReceiptModal({open, onClose}) {
             closable={false}
         >
             {receipts.length > 0 ? (
-                <Table dataSource={receipts} columns={columns} />
+                <Table loading={isLoading} rowKey="id" dataSource={receipts} columns={columns} />
             ) : (
                 <Alert
                     description="Bạn chưa có hoá đơn nào để hiển thị."
