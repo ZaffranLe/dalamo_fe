@@ -22,7 +22,7 @@ function Cart(props) {
         phone: user ? user["phone"] : "",
         address: user ? user["address"] : "",
         note: "",
-        totalPrice: 0,
+        idUser: user ? user["id"] : null,
     };
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function Cart(props) {
     const originalPrice = useMemo(() => {
         let price = 0;
         products.forEach((product) => {
-            price += product["price"] * parseInt(product["cartQuantity"]);
+            price += parseInt(product["price"]) * parseInt(product["cartQuantity"]);
         });
         return price;
     }, [products]);
@@ -43,13 +43,13 @@ function Cart(props) {
             price +=
                 (product["isDiscount"]
                     ? calcDiscountPrice(product["price"], product["discountPercent"])
-                    : product["price"]) * parseInt(product["cartQuantity"]);
+                    : parseInt(product["price"])) * parseInt(product["cartQuantity"]);
         });
         return price;
     }, [products]);
 
     useEffect(() => {
-        infoForm.setFields([{ name: "totalPrice", value: discountPrice }]);
+        infoForm.setFields([{ name: "totalPrice", value: parseInt(discountPrice) }]);
     }, [discountPrice]);
 
     const plusQuantity = (product) => {
@@ -79,16 +79,24 @@ function Cart(props) {
     };
 
     const handleSubmitCart = async () => {
-        const values = await infoForm.validateFields();
-        const orderData = {
-            ...values,
-            products: products.map((p) => ({
-                idProduct: p.id,
-                quantity: p.cartQuantity,
-                price: p.cartQuantity * parseInt(p.price),
-            })),
-        };
-        dispatch(submitOrder(orderData));
+        if (products.length > 0) {
+            const values = await infoForm.validateFields();
+            const orderData = {
+                ...initInfo,
+                ...values,
+                totalPrice: products
+                    .map((products) => products["price"])
+                    .reduce((sum, price) => sum + price),
+                products: products.map((p) => ({
+                    idProduct: p.id,
+                    quantity: p.cartQuantity,
+                    price: p.cartQuantity * parseInt(p.price),
+                })),
+            };
+            dispatch(submitOrder(orderData));
+        } else {
+            toast.error("Giỏ hàng trống.");
+        }
     };
 
     const columns = [
@@ -116,7 +124,10 @@ function Cart(props) {
                             <span>
                                 <span className="text-bold">
                                     {formatVietnameseCurrency(
-                                        calcDiscountPrice(record["price"], record["discountPercent"])
+                                        calcDiscountPrice(
+                                            record["price"],
+                                            record["discountPercent"]
+                                        )
                                     )}
                                 </span>
                                 {" - "}
@@ -129,8 +140,18 @@ function Cart(props) {
                     <p className="mt-10">
                         <label>Số lượng:</label>
                         <Input
-                            prefix={<Button onClick={() => minusQuantity(record)} icon={<MinusOutlined />} />}
-                            suffix={<Button onClick={() => plusQuantity(record)} icon={<PlusOutlined />} />}
+                            prefix={
+                                <Button
+                                    onClick={() => minusQuantity(record)}
+                                    icon={<MinusOutlined />}
+                                />
+                            }
+                            suffix={
+                                <Button
+                                    onClick={() => plusQuantity(record)}
+                                    icon={<PlusOutlined />}
+                                />
+                            }
                             min={1}
                             className="text-center"
                             style={{ width: 125 }}
@@ -161,7 +182,10 @@ function Cart(props) {
                                     message={
                                         <span>
                                             Đã có tài khoản?{" "}
-                                            <Button onClick={() => handleOpenLoginModal("login")} type="link">
+                                            <Button
+                                                onClick={() => handleOpenLoginModal("login")}
+                                                type="link"
+                                            >
                                                 Đăng nhập
                                             </Button>
                                         </span>
@@ -193,10 +217,9 @@ function Cart(props) {
                                                     message: "Xin vui lòng cho biết tên của bạn",
                                                 },
                                             ]}
+                                            label="Họ tên"
+                                            labelCol={{ span: 24 }}
                                         >
-                                            <label>
-                                                Họ tên <span className="text-red text-bold">*</span>
-                                            </label>
                                             <Input />
                                         </Form.Item>
                                     </Col>
@@ -206,13 +229,13 @@ function Cart(props) {
                                             rules={[
                                                 {
                                                     required: true,
-                                                    message: "Vui lòng không để trống số điện thoại",
+                                                    message:
+                                                        "Vui lòng không để trống số điện thoại",
                                                 },
                                             ]}
+                                            label="Số điện thoại"
+                                            labelCol={{ span: 24 }}
                                         >
-                                            <label>
-                                                Số điện thoại <span className="text-red text-bold">*</span>
-                                            </label>
                                             <Input onKeyPress={handlePhoneKeyPress} />
                                         </Form.Item>
                                     </Col>
@@ -224,21 +247,24 @@ function Cart(props) {
                                             rules={[
                                                 {
                                                     required: true,
-                                                    message: "Vui lòng không để trống địa chỉ giao hàng",
+                                                    message:
+                                                        "Vui lòng không để trống địa chỉ giao hàng",
                                                 },
                                             ]}
+                                            label="Địa chỉ"
+                                            labelCol={{ span: 24 }}
                                         >
-                                            <label>
-                                                Địa chỉ <span className="text-red text-bold">*</span>
-                                            </label>
                                             <Input />
                                         </Form.Item>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col span={24}>
-                                        <Form.Item name="note">
-                                            <label>Ghi chú</label>
+                                        <Form.Item
+                                            name="note"
+                                            label="Ghi chú"
+                                            labelCol={{ span: 24 }}
+                                        >
                                             <Input.TextArea />
                                         </Form.Item>
                                     </Col>
@@ -273,7 +299,7 @@ function Cart(props) {
                                         <h4>THÀNH TIỀN</h4>
                                     </Col>
                                     <Col span={8} className="text-red text-bold text-right">
-                                        {formatVietnameseCurrency(infoForm.getFieldValue("totalPrice"))}
+                                        {formatVietnameseCurrency(parseInt(discountPrice))}
                                     </Col>
                                 </Row>
                                 <Row className="mt-20">

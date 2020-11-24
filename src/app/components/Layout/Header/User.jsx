@@ -24,6 +24,7 @@ import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
 import jwt from "jsonwebtoken";
 import { getUserFromToken } from "../../../utils/common/common";
+import ListReceiptModal from "../../Modal/Receipt";
 
 function UserHeader({history}) {
     const dispatch = useDispatch();
@@ -31,20 +32,13 @@ function UserHeader({history}) {
     const productsCart = useSelector((state) => state.cart.products);
     const { categories } = useSelector((state) => state.category);
     const { brands } = useSelector((state) => state.brand);
-    const { loggedIn } = useSelector(state => state.login);
 
-    const [flag, setFlag] = useState(false);
+    const [receiptModal, setReceiptModal] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCategories(categories));
         dispatch(fetchBrands(brands));
     }, []);
-
-    useEffect(() => {
-        if (loggedIn) {
-            setFlag(true);
-        }
-    }, [loggedIn]);
 
     const handleOpenCompareModal = () => {
         dispatch(openCompareModal());
@@ -56,6 +50,14 @@ function UserHeader({history}) {
 
     const handleLogout = () => {
         dispatch(logout(history));
+    }
+
+    const openReceiptModal = () => {
+        setReceiptModal(true);
+    }
+
+    const closeReceiptModal = () => {
+        setReceiptModal(false);
     }
 
     const user = getUserFromToken();
@@ -142,7 +144,7 @@ function UserHeader({history}) {
                         }
                     >
                         <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
-                        <Menu.Item key="Orders">Danh sách đơn hàng</Menu.Item>
+                        <Menu.Item key="Orders" onClick={openReceiptModal}>Danh sách đơn hàng</Menu.Item>
                         <Menu.Item key="SignOut" onClick={handleLogout}>Đăng xuất</Menu.Item>
                     </Menu.SubMenu>
                 ) : (
@@ -182,6 +184,7 @@ function UserHeader({history}) {
             </Menu>
             <CompareModal />
             <LoginModal />
+            <ListReceiptModal open={receiptModal} onClose={closeReceiptModal} />
         </Layout.Header>
     );
 }
