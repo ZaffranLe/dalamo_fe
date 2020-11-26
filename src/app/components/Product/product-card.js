@@ -101,7 +101,9 @@ function ProductCard(props) {
         >
             <Row>
                 <Col span={24}>
-                    <h4 className="product-card__name">{product["name"]}</h4>
+                    <Link to={`/product/detail/${product["slug"]}.${product["id"]}`}>
+                        <h4 className="product-card__name">{product["name"]}</h4>
+                    </Link>
                 </Col>
             </Row>
             <p>

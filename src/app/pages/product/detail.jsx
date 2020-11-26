@@ -23,6 +23,7 @@ import ProductCard from "../../components/Product/product-card";
 import Avatar from "antd/lib/avatar/avatar";
 import moment from "moment";
 import faker from "faker";
+import ProductComment from "./comment-section";
 faker.locale = "vi";
 
 function ProductDetail(props) {
@@ -114,16 +115,22 @@ function ProductDetail(props) {
         }
     };
 
+    const handleSubmitComment = () => {
+
+    }
+
     const tabPaneStyle = {
         maxHeight: 500,
         overflow: "auto",
     };
 
+    const user = window.userInfo;
+
     return (
         <>
             <Row>
                 <Col span={18} offset={3}>
-                    <Skeleton active={true} loading={isLoading}>
+                    <Skeleton active={true} loading={isLoading || !product}>
                         {product ? (
                             <>
                                 <Row>
@@ -350,71 +357,11 @@ function ProductDetail(props) {
                                                 className="bordered"
                                                 style={{ padding: 25 }}
                                             >
-                                                <Divider style={{ fontSize: 24 }}>
-                                                    Đánh giá của khách hàng
-                                                </Divider>
-                                                <h3 style={{ color: "#02937F" }}>
-                                                    {product["comments"].length > 0 ? (
-                                                        <>
-                                                            {averageRating.map((rate, idx) =>
-                                                                rate ? (
-                                                                    <StarFilled
-                                                                        key={idx}
-                                                                        color="#02937F"
-                                                                    />
-                                                                ) : (
-                                                                    <StarOutlined key={idx} />
-                                                                )
-                                                            )}{" "}
-                                                            - Dựa trên {product["comments"].length}{" "}
-                                                            đánh giá
-                                                        </>
-                                                    ) : (
-                                                        "Chưa có đánh giá nào cho sản phẩm này"
-                                                    )}
-                                                </h3>
-                                                {/* Placeholder for user comment */}
-                                                {product["comments"].map((comment, idx) => {
-                                                    const stars = [0, 0, 0, 0, 0].fill(
-                                                        1,
-                                                        0,
-                                                        comment["rate"]
-                                                    );
-                                                    return (
-                                                        <Comment
-                                                            key={idx}
-                                                            author={comment["fullName"]}
-                                                            avatar={
-                                                                <Avatar
-                                                                    src={faker.image.avatar()}
-                                                                    alt="avatar"
-                                                                />
-                                                            }
-                                                            content={
-                                                                <>
-                                                                    <span>
-                                                                        {stars.map((star, idx) =>
-                                                                            star ? (
-                                                                                <StarFilled
-                                                                                    key={idx}
-                                                                                    className="theme-color"
-                                                                                />
-                                                                            ) : (
-                                                                                <StarOutlined
-                                                                                    key={idx}
-                                                                                />
-                                                                            )
-                                                                        )}
-                                                                    </span>
-                                                                    <p>{comment["content"]}</p>
-                                                                </>
-                                                            }
-                                                            datetime={moment(
-                                                                comment["createdDate"]
-                                                            ).format("YYYY-MM-DD HH:mm:ss")}
-                                                        />
-                                                    );
-                                                })}
+                                                <ProductComment
+                                                    comments={product["comments"]}
+                                                    averageRating={averageRating}
+                                                    onComment={handleSubmitComment}
+                                                />
                                             </Col>
                                         </Row>
                                     </Col>

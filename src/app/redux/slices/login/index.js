@@ -64,7 +64,7 @@ function login(credentials) {
             const tokenInfo = jwt.decode(token);
             window.userInfo = tokenInfo["user"];
             toast.success("Đăng nhập thành công.");
-            setLoggedIn(true);
+            dispatch(setLoggedIn(true));
             dispatch(closeModal());
         } catch (e) {
             toast.error("Đăng nhập thất bại! Vui lòng thử lại sau.");

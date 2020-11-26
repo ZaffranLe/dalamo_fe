@@ -4,7 +4,7 @@ import Logo from "../../../assets/img/logo.png";
 
 function Footer(props) {
     return (
-        <Layout.Footer style={{ textAlign: "center", backgroundColor: "white" }}>
+        <Layout.Footer style={{ textAlign: "center", backgroundColor: "white", borderTop: "5px solid #668866" }}>
             <Row>
                 <Col offset={4} span={4}>
                     <div className="logo">

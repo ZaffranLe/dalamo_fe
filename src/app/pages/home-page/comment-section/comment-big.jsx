@@ -13,7 +13,7 @@ function CommentBig(props) {
     rating.fill(1, 0, comment["rate"] - 1);
     return (
         <div className="text-center comment-slide">
-            <Avatar size={100} src={faker.image.avatar()} alt="Avatar" />
+            <Avatar size={100} src={`https://ui-avatars.com/api/?background=random&name=${comment["Fullname"]}`} alt="Avatar" />
             <br />
             {rating.map((rate, idx) =>
                 rate ? <StarTwoTone key={idx} twoToneColor="#FF9642" /> : <StarOutlined key={idx} />

@@ -12,7 +12,7 @@ import { ToastContainer } from "react-toastify";
 ReactDOM.render(
     <Provider store={store}>
         <App />
-        <ToastContainer />
+        <ToastContainer position="bottom-left" />
     </Provider>,
     document.getElementById("root")
 );

@@ -141,7 +141,10 @@ function UserHeader({ history }) {
                             <>
                                 <span style={{ marginRight: 4 }}>Xin chào</span>
                                 <span className="username">{user["fullName"]}</span>
-                                <Avatar style={{ marginLeft: 8 }} src={Logo} />
+                                <Avatar
+                                    style={{ marginLeft: 8 }}
+                                    src={`https://ui-avatars.com/api/?background=random&name=${user["fullName"]}`}
+                                />
                             </>
                         }
                     >
@@ -170,7 +173,10 @@ function UserHeader({ history }) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
+                                <ShoppingTwoTone
+                                    twoToneColor="#6da9f7"
+                                    className="icon--non-margin"
+                                />
                             </Badge>
                         </Tooltip>
                     </Link>

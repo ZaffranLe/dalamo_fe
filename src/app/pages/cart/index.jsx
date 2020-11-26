@@ -84,16 +84,16 @@ function Cart(props) {
             const orderData = {
                 ...initInfo,
                 ...values,
-                totalPrice: products
-                    .map((products) => products["price"])
-                    .reduce((sum, price) => sum + price),
+                totalPrice: discountPrice,
                 products: products.map((p) => ({
                     idProduct: p.id,
                     quantity: p.cartQuantity,
-                    price: p.cartQuantity * parseInt(p.price),
+                    price:
+                        (p["isDiscount"]
+                            ? calcDiscountPrice(p["price"], p["discountPercent"])
+                            : parseInt(p["price"])) * parseInt(p["cartQuantity"]),
                 })),
             };
-            console.log(orderData);
             dispatch(submitOrder(orderData));
         } else {
             toast.error("Giỏ hàng trống.");

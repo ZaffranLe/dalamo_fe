@@ -8,15 +8,22 @@ import moment from "moment";
 
 function ListReceiptModal({ open, onClose }) {
     const { receipts, isLoading, isSucceed } = useSelector((state) => state.cart);
+    const { loggedIn } = useSelector((state) => state.login);
+    const user = window.userInfo;
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchReceipts(receipts));
+        if (user) {
+            dispatch(fetchReceipts(receipts));
+        }
     }, []);
 
     useEffect(() => {
-        dispatch(fetchReceipts(receipts));
-    }, [isSucceed]);
+        if (user || loggedIn) {
+            dispatch(fetchReceipts(receipts));
+        }
+    }, [isSucceed, loggedIn]);
 
     const columns = [
         {
