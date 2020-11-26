@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-    Row,
-    Col,
-    Image,
-    Alert,
-    Skeleton,
-    Carousel,
-    Input,
-    Button,
-    Tabs,
-    Divider,
-    Comment,
-} from "antd";
+import { Row, Col, Image, Alert, Skeleton, Carousel, Input, Button, Tabs, Divider, Comment } from "antd";
 import { PlusOutlined, MinusOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
-import { fetchProduct, fetchProducts, setDetailProduct } from "../../redux/slices/product";
+import { fetchProduct, fetchProducts, setDetailProduct, submitComment } from "../../redux/slices/product";
 import { addProductToCart } from "../../redux/slices/cart";
 import { useDispatch, useSelector } from "react-redux";
-import PlaceHolderImg1 from "../../assets/img/product-placeholder.png";
-import PlaceHolderImg2 from "../../assets/img/product-placeholder-2.png";
 import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/common";
 import ProductCard from "../../components/Product/product-card";
-import Avatar from "antd/lib/avatar/avatar";
-import moment from "moment";
 import faker from "faker";
 import ProductComment from "./comment-section";
 faker.locale = "vi";
 
 function ProductDetail(props) {
-    const { detailProduct: product, isLoading, products } = useSelector((state) => state.product);
+    const { detailProduct: product, isLoading, products, isSucceed } = useSelector((state) => state.product);
     const dispatch = useDispatch();
     const {
         match: {
@@ -53,6 +37,12 @@ function ProductDetail(props) {
             dispatch(fetchProduct(id));
         }
     }, [productSlug]);
+
+    useEffect(() => {
+        if (product && isSucceed) {
+            dispatch(fetchProduct(product["id"]));
+        }
+    }, [isSucceed]);
 
     useEffect(() => {
         if (product) {
@@ -115,9 +105,16 @@ function ProductDetail(props) {
         }
     };
 
-    const handleSubmitComment = () => {
-
-    }
+    const handleSubmitComment = (content, rate) => {
+        if (user) {
+            const comment = {
+                idProduct: product["id"],
+                content,
+                rate,
+            };
+            dispatch(submitComment(comment));
+        }
+    };
 
     const tabPaneStyle = {
         maxHeight: 500,
@@ -130,53 +127,36 @@ function ProductDetail(props) {
         <>
             <Row>
                 <Col span={18} offset={3}>
-                    <Skeleton active={true} loading={isLoading || !product}>
+                    <Skeleton active={true} loading={!product}>
                         {product ? (
                             <>
                                 <Row>
                                     <Col span={24}>
                                         <Row>
                                             <Col span={9} className="text-center">
-                                                <Carousel
-                                                    autoplay
-                                                    autoplaySpeed={5000}
-                                                    pauseOnHover
-                                                >
-                                                    <div>
-                                                        <Image src={PlaceHolderImg1} alt="Img 1" />
-                                                    </div>
-                                                    <div>
-                                                        <Image src={PlaceHolderImg2} alt="Img 2" />
-                                                    </div>
+                                                <Carousel autoplay autoplaySpeed={5000} pauseOnHover>
+                                                    {product["images"].map((img) => (
+                                                        <div key={img["id"]}>
+                                                            <Image src={img["url"]} alt="Product image" />
+                                                        </div>
+                                                    ))}
                                                 </Carousel>
                                             </Col>
-                                            <Col
-                                                span={15}
-                                                className="bordered"
-                                                style={{ padding: 25 }}
-                                            >
+                                            <Col span={15} className="bordered" style={{ padding: 25 }}>
                                                 <Row>
                                                     <Col span={24}>
                                                         <h2>{product["name"]}</h2>
                                                         <h3 style={{ color: "#02937F" }}>
                                                             {product["comments"].length > 0 ? (
                                                                 <>
-                                                                    {averageRating.map(
-                                                                        (rate, idx) =>
-                                                                            rate ? (
-                                                                                <StarFilled
-                                                                                    key={idx}
-                                                                                    color="#02937F"
-                                                                                />
-                                                                            ) : (
-                                                                                <StarOutlined
-                                                                                    key={idx}
-                                                                                />
-                                                                            )
+                                                                    {averageRating.map((rate, idx) =>
+                                                                        rate ? (
+                                                                            <StarFilled key={idx} color="#02937F" />
+                                                                        ) : (
+                                                                            <StarOutlined key={idx} />
+                                                                        )
                                                                     )}{" "}
-                                                                    - Dựa trên{" "}
-                                                                    {product["comments"].length}{" "}
-                                                                    đánh giá
+                                                                    - Dựa trên {product["comments"].length} đánh giá
                                                                 </>
                                                             ) : (
                                                                 "Chưa có đánh giá nào cho sản phẩm này"
@@ -189,9 +169,7 @@ function ProductDetail(props) {
                                                                         {formatVietnameseCurrency(
                                                                             calcDiscountPrice(
                                                                                 product["price"],
-                                                                                product[
-                                                                                    "discountPercent"
-                                                                                ]
+                                                                                product["discountPercent"]
                                                                             )
                                                                         )}
                                                                     </span>
@@ -200,22 +178,17 @@ function ProductDetail(props) {
                                                             )}
                                                             <span
                                                                 className={`${
-                                                                    product["isDiscount"] &&
-                                                                    "original-price"
+                                                                    product["isDiscount"] && "original-price"
                                                                 }`}
                                                             >
-                                                                {formatVietnameseCurrency(
-                                                                    product["price"]
-                                                                )}
+                                                                {formatVietnameseCurrency(product["price"])}
                                                             </span>
                                                         </h2>
                                                     </Col>
                                                 </Row>
                                                 <Row>
                                                     <Col span={24}>
-                                                        <label className="text-bold">
-                                                            Số lượng:
-                                                        </label>
+                                                        <label className="text-bold">Số lượng:</label>
                                                     </Col>
                                                 </Row>
                                                 <Row>
@@ -266,27 +239,17 @@ function ProductDetail(props) {
                                                                 key="overview"
                                                                 style={tabPaneStyle}
                                                             >
-                                                                <h3>
-                                                                    Xuất xứ: {product["origin"]}
-                                                                </h3>
-                                                                <Divider orientation="left">
-                                                                    Mô tả
-                                                                </Divider>
+                                                                <h3>Xuất xứ: {product["origin"]}</h3>
+                                                                <Divider orientation="left">Mô tả</Divider>
                                                                 <p>{product["description"]}</p>
-                                                                <Divider orientation="left">
-                                                                    Đặc điểm
-                                                                </Divider>
+                                                                <Divider orientation="left">Đặc điểm</Divider>
                                                                 <ul>
                                                                     {product["characteristic"] &&
                                                                         product["characteristic"]
                                                                             .trim()
                                                                             .split("-")
                                                                             .slice(1)
-                                                                            .map((ch, idx) => (
-                                                                                <li key={idx}>
-                                                                                    {ch}
-                                                                                </li>
-                                                                            ))}
+                                                                            .map((ch, idx) => <li key={idx}>{ch}</li>)}
                                                                 </ul>
                                                             </Tabs.TabPane>
                                                             <Tabs.TabPane
@@ -295,9 +258,7 @@ function ProductDetail(props) {
                                                                 style={tabPaneStyle}
                                                             >
                                                                 <p>{product["guide"]}</p>
-                                                                <Divider orientation="left">
-                                                                    Bảo quản
-                                                                </Divider>
+                                                                <Divider orientation="left">Bảo quản</Divider>
                                                                 <p>{product["preservation"]}</p>
                                                             </Tabs.TabPane>
                                                             <Tabs.TabPane
@@ -312,16 +273,9 @@ function ProductDetail(props) {
                                                                     {product["ingredient"] &&
                                                                         product["ingredient"]
                                                                             .split(",")
-                                                                            .map(
-                                                                                (
-                                                                                    ingredient,
-                                                                                    idx
-                                                                                ) => (
-                                                                                    <li key={idx}>
-                                                                                        {ingredient}
-                                                                                    </li>
-                                                                                )
-                                                                            )}
+                                                                            .map((ingredient, idx) => (
+                                                                                <li key={idx}>{ingredient}</li>
+                                                                            ))}
                                                                 </ol>
                                                             </Tabs.TabPane>
                                                         </Tabs>
@@ -331,15 +285,12 @@ function ProductDetail(props) {
                                         </Row>
                                         <Row>
                                             <Col span={24}>
-                                                <Divider style={{ fontSize: 24 }}>
-                                                    Bạn có thể thích
-                                                </Divider>
+                                                <Divider style={{ fontSize: 24 }}>Bạn có thể thích</Divider>
                                                 <Row gutter={15}>
                                                     {products
                                                         .filter(
                                                             (p) =>
-                                                                p["categoryId"] ==
-                                                                    product["idCategory"] &&
+                                                                p["categoryId"] == product["idCategory"] &&
                                                                 p["id"] != product["id"]
                                                         )
                                                         .slice(0, 4)
@@ -352,11 +303,7 @@ function ProductDetail(props) {
                                             </Col>
                                         </Row>
                                         <Row className="mt-25">
-                                            <Col
-                                                span={24}
-                                                className="bordered"
-                                                style={{ padding: 25 }}
-                                            >
+                                            <Col span={24} className="bordered" style={{ padding: 25 }}>
                                                 <ProductComment
                                                     comments={product["comments"]}
                                                     averageRating={averageRating}

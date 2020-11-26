@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { Avatar, Comment, Input, Button, Divider } from "antd";
+import { useSelector } from "react-redux";
 
 function ProductComment({ comments, averageRating, onComment }) {
     const user = window.userInfo;
+
+    const { isLoading } = useSelector((state) => state.product);
+
+    const [rating, setRating] = useState(5);
+    const [content, setContent] = useState("");
+
+    const handleChangeContent = (e) => {
+        setContent(e.target.value);
+    };
+
+    const bigStarStyle = {
+        fontSize: 32,
+        cursor: "pointer",
+    };
 
     return (
         <>
@@ -13,11 +28,7 @@ function ProductComment({ comments, averageRating, onComment }) {
                 {comments.length > 0 ? (
                     <>
                         {averageRating.map((rate, idx) =>
-                            rate ? (
-                                <StarFilled key={idx} color="#02937F" />
-                            ) : (
-                                <StarOutlined key={idx} />
-                            )
+                            rate ? <StarFilled key={idx} color="#02937F" /> : <StarOutlined key={idx} />
                         )}{" "}
                         - Dựa trên {comments.length} đánh giá
                     </>
@@ -27,7 +38,30 @@ function ProductComment({ comments, averageRating, onComment }) {
             </h3>
             {user && !comments.find((comment) => comment["idUser"] == user["id"]) && (
                 <div className="mt-15 mb-15">
-                    <Input.TextArea rows={4} placeholder="Hãy cho chúng tôi biết ý kiến của bạn" />
+                    <h4>Hãy cho chúng tôi biết ý kiến của bạn</h4>
+                    {[0, 0, 0, 0, 0]
+                        .fill(1, 0, rating)
+                        .map((star, idx) =>
+                            star ? (
+                                <StarFilled
+                                    onClick={() => setRating(idx + 1)}
+                                    style={bigStarStyle}
+                                    key={idx}
+                                    className="theme-color"
+                                />
+                            ) : (
+                                <StarOutlined onClick={() => setRating(idx + 1)} style={bigStarStyle} key={idx} />
+                            )
+                        )}
+                    <Input.TextArea rows={4} placeholder="Đánh giá" value={content} onChange={handleChangeContent} />
+                    <Button
+                        loading={isLoading}
+                        onClick={() => onComment(content, rating)}
+                        className="mt-10"
+                        type="primary"
+                    >
+                        Gửi đánh giá
+                    </Button>
                 </div>
             )}
             {comments.map((comment, idx) => {

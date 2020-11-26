@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Skeleton } from "antd";
 import PropTypes from "prop-types";
 import faker from "faker";
-import { HeartTwoTone, StarOutlined, StarTwoTone } from "@ant-design/icons";
+import { HeartTwoTone, StarOutlined, StarFilled } from "@ant-design/icons";
 import "./Comment.scss";
 import Avatar from "antd/lib/avatar/avatar";
 faker.locale = "vi";
@@ -10,13 +10,13 @@ faker.locale = "vi";
 function CommentBig(props) {
     const { comment } = props;
     const rating = [0, 0, 0, 0, 0];
-    rating.fill(1, 0, comment["rate"] - 1);
+    rating.fill(1, 0, comment["rate"]);
     return (
         <div className="text-center comment-slide">
             <Avatar size={100} src={`https://ui-avatars.com/api/?background=random&name=${comment["Fullname"]}`} alt="Avatar" />
             <br />
             {rating.map((rate, idx) =>
-                rate ? <StarTwoTone key={idx} twoToneColor="#FF9642" /> : <StarOutlined key={idx} />
+                rate ? <StarFilled key={idx} className="theme-color" /> : <StarOutlined key={idx} />
             )}
             <p>
                 <span className="text-big">{comment["content"]}</span>

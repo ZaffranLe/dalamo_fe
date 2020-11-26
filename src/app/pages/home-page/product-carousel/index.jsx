@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Carousel, Col, Row, Tooltip } from "antd";
+import { Button, Carousel, Col, Image, Row, Tooltip } from "antd";
 import PlaceHolderImg from "../../../assets/img/product-placeholder.png";
 import { formatVietnameseCurrency } from "../../../utils/common/common";
 import PropTypes from "prop-types";
@@ -27,13 +27,7 @@ function ProductCarousel(props) {
 
     return (
         <Col span={12}>
-            <Carousel
-                speed={2000}
-                autoplay={true}
-                autoplaySpeed={10000}
-                pauseOnHover={false}
-                dots={false}
-            >
+            <Carousel speed={2000} autoplay={true} autoplaySpeed={10000} pauseOnHover={false} dots={false}>
                 {products.map((product) => (
                     <div key={product["id"]}>
                         <Row>
@@ -51,27 +45,30 @@ function ProductCarousel(props) {
                                     }}
                                 >
                                     <Col span={14} onClick={() => handleViewProduct(product)}>
-                                        <img
-                                            src={PlaceHolderImg}
-                                            className="product-card__img"
-                                            alt="Product img"
-                                        />
+                                        {product["images"].length > 0 ? (
+                                            <Image
+                                                alt="Product image"
+                                                className="product-card__img"
+                                                src={product["images"][0]["url"]}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={PlaceHolderImg}
+                                                className="product-card__img"
+                                                alt="Product image"
+                                            />
+                                        )}
                                     </Col>
                                     <Col span={10}>
                                         <div onClick={() => handleViewProduct(product)}>
                                             <h5 className="txt--uppercase txt--dark-olive txt--ellipsis txt--ellipsis-1">
                                                 {product["categoryName"] || product["brandName"]}
                                             </h5>
-                                            <h4 className="txt--ellipsis txt--ellipsis-3">
-                                                {product["name"]}
-                                            </h4>
+                                            <h4 className="txt--ellipsis txt--ellipsis-3">{product["name"]}</h4>
                                             <h4 className="txt--dark-olive">
                                                 {formatVietnameseCurrency(product["price"])}
                                             </h4>
-                                            <p
-                                                className="txt--ellipsis txt--ellipsis-5"
-                                                style={{ marginTop: 10 }}
-                                            >
+                                            <p className="txt--ellipsis txt--ellipsis-5" style={{ marginTop: 10 }}>
                                                 {product["description"]}
                                             </p>
                                         </div>

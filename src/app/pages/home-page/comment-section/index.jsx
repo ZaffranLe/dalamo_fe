@@ -14,20 +14,14 @@ function CommentSection(props) {
     return (
         <Skeleton loading={isLoading}>
             <Col span={24}>
-                <Carousel
-                    speed={2000}
-                    autoplay={true}
-                    autoplaySpeed={10000}
-                    pauseOnHover={false}
-                    dots={false}
-                >
-                    <Row>
-                        <Col span={24}>
-                            {comments.map((comment, idx) => (
-                                <CommentBig key={idx} comment={comment} />
-                            ))}
-                        </Col>
-                    </Row>
+                <Carousel speed={2000} autoplay={true} autoplaySpeed={10000} pauseOnHover={false} dots={false}>
+                    {comments.map((comment, idx) => (
+                        <Row key={idx}>
+                            <Col span={24}>
+                                <CommentBig comment={comment} />
+                            </Col>
+                        </Row>
+                    ))}
                 </Carousel>
             </Col>
         </Skeleton>

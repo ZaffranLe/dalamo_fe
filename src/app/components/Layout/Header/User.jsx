@@ -11,7 +11,7 @@ import {
     SearchOutlined,
     ArrowRightOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input, Divider } from "antd";
+import { Layout, Menu, Avatar, Tooltip, Badge, Skeleton, Input, Divider, Alert } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import "./Header.scss";
 import Logo from "../../../assets/img/logo.png";
@@ -22,9 +22,11 @@ import { fetchCategories } from "../../../redux/slices/category";
 import { fetchBrands } from "../../../redux/slices/brand";
 import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
-import jwt from "jsonwebtoken";
-import { getUserFromToken } from "../../../utils/common/common";
+import { getSlug, getUserFromToken } from "../../../utils/common/common";
 import ListReceiptModal from "../../Modal/Receipt";
+import _ from "lodash";
+import ProductMenu from "../../Product/product-menu";
+import { fetchProducts } from "../../../redux/slices/product";
 
 function UserHeader({ history }) {
     const dispatch = useDispatch();
@@ -32,12 +34,15 @@ function UserHeader({ history }) {
     const productsCart = useSelector((state) => state.cart.products);
     const { categories } = useSelector((state) => state.category);
     const { brands } = useSelector((state) => state.brand);
+    const { products } = useSelector((state) => state.product);
 
+    const [searchedProducts, setSearchedProducts] = useState([]);
     const [receiptModal, setReceiptModal] = useState(false);
 
     useEffect(() => {
         dispatch(fetchCategories(categories));
         dispatch(fetchBrands(brands));
+        dispatch(fetchProducts(products));
     }, []);
 
     const handleOpenCompareModal = () => {
@@ -58,6 +63,14 @@ function UserHeader({ history }) {
 
     const closeReceiptModal = () => {
         setReceiptModal(false);
+    };
+
+    const handleSearch = (e) => {
+        let newProducts = [];
+        if (e.target.value) {
+            newProducts = products.filter((product) => product["slug"].includes(getSlug(e.target.value)));
+        }
+        setSearchedProducts(newProducts);
     };
 
     const user = getUserFromToken();
@@ -131,9 +144,33 @@ function UserHeader({ history }) {
                     ))}
                 </Menu.SubMenu>
 
-                <Menu.Item className="padding-menu">
-                    <Input placeholder="Tìm kiếm..." suffix={<SearchOutlined />} />
-                </Menu.Item>
+                <Menu.SubMenu
+                    className="padding-menu"
+                    style={{width: "25%"}}
+                    title={
+                        <Input
+                            placeholder="Tìm kiếm..."
+                            suffix={<SearchOutlined />}
+                            defaultValue=""
+                            onChange={_.debounce(handleSearch, 500)}
+                        />
+                    }
+                >
+                    {searchedProducts.length > 0 ? (
+                        searchedProducts.map((product, idx) => (
+                            <React.Fragment key={product["id"]}>
+                                <Menu.Item style={{ height: 100 }}>
+                                    <ProductMenu key={idx} product={product} />
+                                </Menu.Item>
+                                <Menu.Divider />
+                            </React.Fragment>
+                        ))
+                    ) : (
+                        <Menu.Item>
+                            <Alert message="Không tìm thấy sản phẩm phù hợp" />
+                        </Menu.Item>
+                    )}
+                </Menu.SubMenu>
                 {user ? (
                     <Menu.SubMenu
                         className="float-right padding-menu"
@@ -173,10 +210,7 @@ function UserHeader({ history }) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone
-                                    twoToneColor="#6da9f7"
-                                    className="icon--non-margin"
-                                />
+                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
                             </Badge>
                         </Tooltip>
                     </Link>

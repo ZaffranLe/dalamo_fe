@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { Button, Card, Carousel, Col, Row, Tooltip } from "antd";
+import { Button, Card, Carousel, Col, Row, Tooltip, Image } from "antd";
 import { EyeTwoTone, RetweetOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
 import PlaceHolderImg2 from "../../assets/img/product-placeholder-2.png";
@@ -42,28 +42,12 @@ function ProductCard(props) {
             cover={
                 <div style={{ width: "100%", position: "relative" }}>
                     <Carousel speed={500} ref={carousel}>
-                        <div>
-                            <img
-                                className="product-card__img"
-                                alt="Placeholder 1"
-                                src={PlaceHolderImg}
-                            />
-                        </div>
-                        <div>
-                            <img
-                                className="product-card__img"
-                                alt="Placeholder 2"
-                                src={PlaceHolderImg2}
-                            />
-                        </div>
+                        {product["images"].map((img) => (
+                            <div key={img["id"]}>
+                                <Image className="product-card__img" src={img["url"]} alt="Product image" />
+                            </div>
+                        ))}
                     </Carousel>
-                    <div className="custom-overlay" style={{ marginTop: 10, marginLeft: 10 }}>
-                        {Boolean(product["isDiscount"]) && (
-                            <span className="text-big" style={{ color: "#FA6BFE" }}>
-                                -{product["discountPercent"]}%
-                            </span>
-                        )}
-                    </div>
                     <div
                         className="custom-overlay custom-overlay-dark-bg"
                         hidden={hidden}
@@ -109,15 +93,13 @@ function ProductCard(props) {
             <p>
                 {Boolean(product["isDiscount"]) && (
                     <span>
-                        <span>
-                            {formatVietnameseCurrency(
-                                calcDiscountPrice(product["price"], product["discountPercent"])
-                            )}
+                        <span className="text-bold">
+                            {formatVietnameseCurrency(calcDiscountPrice(product["price"], product["discountPercent"]))}
                         </span>
                         {" - "}
                     </span>
                 )}
-                <span className={`${product["isDiscount"] && "original-price"}`}>
+                <span className={`${product["isDiscount"] && "original-price"} text-bold`}>
                     {formatVietnameseCurrency(product["price"])}
                 </span>
             </p>

@@ -7,6 +7,7 @@ import ProductSection from "./product-section";
 import ProductCarousel from "./product-carousel";
 import CommentSection from "./comment-section";
 import "./Home.scss";
+import { Link } from "react-router-dom";
 
 function HomePage(props) {
     const { hotProducts, isLoading } = useSelector((state) => state.product);
@@ -14,7 +15,7 @@ function HomePage(props) {
     useEffect(() => {
         document.title = "Trang chủ";
     }, []);
-    
+
     return (
         <>
             <Row>
@@ -28,9 +29,11 @@ function HomePage(props) {
             </Row>
             <Row style={{ marginTop: 10 }}>
                 <Col span={24} style={{ textAlign: "center" }}>
-                    <Button type="link">
-                        <u>Xem thêm các sản phẩm khác</u>
-                    </Button>
+                    <Link to="/product">
+                        <Button type="link">
+                            <u>Xem thêm các sản phẩm khác</u>
+                        </Button>
+                    </Link>
                 </Col>
             </Row>
             <Row style={{ marginTop: 150 }}>
@@ -38,19 +41,12 @@ function HomePage(props) {
                     <h2 className="txt--font-lobster">Sản phẩm nổi bật</h2>
                 </Col>
             </Row>
-            <Row
-                gutter={2}
-                style={{ backgroundColor: "#F6F6F6", paddingTop: 25, paddingBottom: 25 }}
-            >
+            <Row gutter={2} style={{ backgroundColor: "#F6F6F6", paddingTop: 25, paddingBottom: 25 }}>
                 <Skeleton loading={isLoading}>
-                    <ProductCarousel
-                        products={hotProducts.slice(0, Math.floor(hotProducts.length / 2))}
-                    />
+                    <ProductCarousel products={hotProducts.slice(0, Math.floor(hotProducts.length / 2))} />
                 </Skeleton>
                 <Skeleton loading={isLoading}>
-                    <ProductCarousel
-                        products={hotProducts.slice(Math.floor(hotProducts.length / 2))}
-                    />
+                    <ProductCarousel products={hotProducts.slice(Math.floor(hotProducts.length / 2))} />
                 </Skeleton>
             </Row>
             <Row style={{ marginTop: 150 }}>

@@ -9,6 +9,7 @@ const initState = {
     newArrivalProducts: [],
     isLoading: false,
     detailProduct: null,
+    isSucceed: false,
 };
 
 const homePage = createSlice({
@@ -33,6 +34,9 @@ const homePage = createSlice({
         setDetailProduct: (state, action) => {
             state.detailProduct = action.payload;
         },
+        setIsSucceed: (state, action) => {
+            state.isSucceed = action.payload;
+        }
     },
 });
 
@@ -44,6 +48,7 @@ export const {
     setNewProducts,
     setIsLoading,
     setDetailProduct,
+    setIsSucceed,
 } = actions;
 
 function fetchProducts(currentProducts = []) {
@@ -74,9 +79,11 @@ function fetchProduct(id) {
                 data = null;
             }
             dispatch(setDetailProduct(data));
-            dispatch(setIsLoading(false));
+            dispatch(setIsSucceed(false));
         } catch (e) {
             console.error(e);
+        } finally {
+            dispatch(setIsLoading(false));
         }
     }
 }
@@ -131,13 +138,36 @@ function fetchNewArrivalProducts(currentProducts = []) {
             }
             const data = await _fetchApi();
             dispatch(setNewArrivalProducts(data));
-            dispatch(setIsLoading(false));
         } catch (e) {
             console.error(e);
+        } finally {
+            if (currentProducts.length === 0) {
+                dispatch(setIsLoading(false));
+            }
         }
     };
 }
 
-export { fetchProducts, fetchHotProducts, fetchNewProducts, fetchNewArrivalProducts, fetchProduct };
+function submitComment(comment) {
+    return async dispatch => {
+        try {
+            dispatch(setIsLoading(true));
+            const resp = await axiosClient({
+                url: "/client/comment",
+                method: "post",
+                data: comment
+            });
+            dispatch(setIsSucceed(true));
+            toast.success("Dalamo xin chân thành cảm ơn ý kiến đóng góp của bạn.");
+        } catch (e) {
+            console.error(e);
+            toast.error("Có lỗi xảy ra trên hệ thống! Vui lòng thử lại sau.")
+        } finally {
+            dispatch(setIsLoading(false));
+        }
+    }
+}
+
+export { fetchProducts, fetchHotProducts, fetchNewProducts, fetchNewArrivalProducts, fetchProduct, submitComment };
 
 export default reducer;
