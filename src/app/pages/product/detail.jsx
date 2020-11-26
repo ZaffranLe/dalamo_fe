@@ -134,10 +134,13 @@ function ProductDetail(props) {
                                     <Col span={24}>
                                         <Row>
                                             <Col span={9} className="text-center">
-                                                <Carousel autoplay autoplaySpeed={5000} pauseOnHover>
+                                                <Carousel draggable autoplay autoplaySpeed={5000} pauseOnHover>
                                                     {product["images"].map((img) => (
                                                         <div key={img["id"]}>
-                                                            <Image src={img["url"]} alt="Product image" />
+                                                            <Image
+                                                                src={`${img["url"]}/tr:h-500`}
+                                                                alt="Product image"
+                                                            />
                                                         </div>
                                                     ))}
                                                 </Carousel>

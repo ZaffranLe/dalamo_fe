@@ -7,6 +7,8 @@ const initState = {
     isLoading: false,
     receipts: [],
     isSucceed: false,
+    openCart: false,
+    mouseEnterCart: false,
 };
 
 const cart = createSlice({
@@ -46,6 +48,12 @@ const cart = createSlice({
         setIsSucceed: (state, action) => {
             state.isSucceed = action.payload;
         },
+        setOpenCart: (state, action) => {
+            state.openCart = action.payload;
+        },
+        setMouseEnterCart: (state, action) => {
+            state.mouseEnterCart = action.payload;
+        },
     },
 });
 
@@ -58,6 +66,8 @@ export const {
     removeProduct,
     setIsLoading,
     setIsSucceed,
+    setOpenCart,
+    setMouseEnterCart,
 } = actions;
 
 function fetchReceipts(currentReceipts = []) {

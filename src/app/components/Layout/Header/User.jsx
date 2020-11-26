@@ -25,8 +25,9 @@ import LoginModal from "../../Modal/Login";
 import { getSlug, getUserFromToken } from "../../../utils/common/common";
 import ListReceiptModal from "../../Modal/Receipt";
 import _ from "lodash";
-import ProductMenu from "../../Product/product-menu";
 import { fetchProducts } from "../../../redux/slices/product";
+import { setSearchResults, setOpenSearchResult } from "../../../redux/slices/header";
+import { setOpenCart } from "../../../redux/slices/cart";
 
 function UserHeader({ history }) {
     const dispatch = useDispatch();
@@ -36,7 +37,6 @@ function UserHeader({ history }) {
     const { brands } = useSelector((state) => state.brand);
     const { products } = useSelector((state) => state.product);
 
-    const [searchedProducts, setSearchedProducts] = useState([]);
     const [receiptModal, setReceiptModal] = useState(false);
 
     useEffect(() => {
@@ -57,20 +57,13 @@ function UserHeader({ history }) {
         dispatch(logout(history));
     };
 
-    const openReceiptModal = () => {
-        setReceiptModal(true);
-    };
-
-    const closeReceiptModal = () => {
-        setReceiptModal(false);
-    };
-
     const handleSearch = (e) => {
         let newProducts = [];
-        if (e.target.value) {
-            newProducts = products.filter((product) => product["slug"].includes(getSlug(e.target.value)));
+        const text = e.target.value;
+        if (text) {
+            newProducts = products.filter((product) => product["slug"].includes(getSlug(text)));
         }
-        setSearchedProducts(newProducts);
+        dispatch(setSearchResults({ result: newProducts, text }));
     };
 
     const user = getUserFromToken();
@@ -144,33 +137,16 @@ function UserHeader({ history }) {
                     ))}
                 </Menu.SubMenu>
 
-                <Menu.SubMenu
-                    className="padding-menu"
-                    style={{width: "25%"}}
-                    title={
-                        <Input
-                            placeholder="Tìm kiếm..."
-                            suffix={<SearchOutlined />}
-                            defaultValue=""
-                            onChange={_.debounce(handleSearch, 500)}
-                        />
-                    }
-                >
-                    {searchedProducts.length > 0 ? (
-                        searchedProducts.map((product, idx) => (
-                            <React.Fragment key={product["id"]}>
-                                <Menu.Item style={{ height: 100 }}>
-                                    <ProductMenu key={idx} product={product} />
-                                </Menu.Item>
-                                <Menu.Divider />
-                            </React.Fragment>
-                        ))
-                    ) : (
-                        <Menu.Item>
-                            <Alert message="Không tìm thấy sản phẩm phù hợp" />
-                        </Menu.Item>
-                    )}
-                </Menu.SubMenu>
+                <Menu.Item className="padding-menu" style={{ width: "25%" }}>
+                    <Input
+                        placeholder="Tìm kiếm..."
+                        suffix={<SearchOutlined />}
+                        defaultValue=""
+                        onChange={_.debounce(handleSearch, 500)}
+                        onFocus={() => dispatch(setOpenSearchResult(true))}
+                        onBlur={() => dispatch(setOpenSearchResult(false))}
+                    />
+                </Menu.Item>
                 {user ? (
                     <Menu.SubMenu
                         className="float-right padding-menu"
@@ -186,7 +162,7 @@ function UserHeader({ history }) {
                         }
                     >
                         <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
-                        <Menu.Item key="Orders" onClick={openReceiptModal}>
+                        <Menu.Item key="Orders" onClick={() => setReceiptModal(true)}>
                             Danh sách đơn hàng
                         </Menu.Item>
                         <Menu.Item key="SignOut" onClick={handleLogout}>
@@ -206,7 +182,12 @@ function UserHeader({ history }) {
                         </Menu.Item>
                     </Menu.SubMenu>
                 )}
-                <Menu.Item className="float-right padding-menu" key="Cart">
+                <Menu.Item
+                    onMouseEnter={() => dispatch(setOpenCart(true))}
+                    onMouseLeave={() => dispatch(setOpenCart(false))}
+                    className="float-right padding-menu"
+                    key="Cart"
+                >
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
@@ -230,7 +211,7 @@ function UserHeader({ history }) {
             </Menu>
             <CompareModal />
             <LoginModal />
-            <ListReceiptModal open={receiptModal} onClose={closeReceiptModal} />
+            <ListReceiptModal open={receiptModal} onClose={() => setReceiptModal(false)} />
         </Layout.Header>
     );
 }

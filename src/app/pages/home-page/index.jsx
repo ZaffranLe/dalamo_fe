@@ -41,13 +41,12 @@ function HomePage(props) {
                     <h2 className="txt--font-lobster">Sản phẩm nổi bật</h2>
                 </Col>
             </Row>
-            <Row gutter={2} style={{ backgroundColor: "#F6F6F6", paddingTop: 25, paddingBottom: 25 }}>
-                <Skeleton loading={isLoading}>
-                    <ProductCarousel products={hotProducts.slice(0, Math.floor(hotProducts.length / 2))} />
-                </Skeleton>
-                <Skeleton loading={isLoading}>
-                    <ProductCarousel products={hotProducts.slice(Math.floor(hotProducts.length / 2))} />
-                </Skeleton>
+            <Row gutter={2} style={{ backgroundColor: "#668866", paddingTop: 25, paddingBottom: 25 }}>
+                <Col span={24}>
+                    <Skeleton loading={isLoading}>
+                        <ProductCarousel products={hotProducts} />
+                    </Skeleton>
+                </Col>
             </Row>
             <Row style={{ marginTop: 150 }}>
                 <Col span={16} push={4}>
