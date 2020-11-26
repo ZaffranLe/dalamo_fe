@@ -1,14 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Row, Col, PageHeader, Divider, Checkbox, Select } from "antd";
+import { Row, Col, PageHeader, Divider, Checkbox, Select, Pagination } from "antd";
 import ProductCardGrid from "../../components/Product/product-card-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../redux/slices/product";
-import {
-    SortAscendingOutlined,
-    SortDescendingOutlined,
-    RiseOutlined,
-    FallOutlined,
-} from "@ant-design/icons";
+import { SortAscendingOutlined, SortDescendingOutlined, RiseOutlined, FallOutlined } from "@ant-design/icons";
 import qs from "query-string";
 import { Link } from "react-router-dom";
 
@@ -51,6 +46,8 @@ function Product(props) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedBrand, setSelectedBrand] = useState("");
     const [processedProducts, setProcessedProducts] = useState([]);
+    const [pageSize, setPageSize] = useState(12);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         dispatch(fetchProducts(products));
@@ -68,14 +65,10 @@ function Product(props) {
     useEffect(() => {
         let listProduct = [...products];
         if (selectedBrand) {
-            listProduct = listProduct.filter(
-                (product) => product["brandId"] == selectedBrand["id"]
-            );
+            listProduct = listProduct.filter((product) => product["brandId"] == selectedBrand["id"]);
         }
         if (selectedCategory) {
-            listProduct = listProduct.filter(
-                (product) => product["categoryId"] == selectedCategory["id"]
-            );
+            listProduct = listProduct.filter((product) => product["categoryId"] == selectedCategory["id"]);
         }
 
         const searchObj = qs.parse(search);
@@ -92,14 +85,10 @@ function Product(props) {
                 listProduct = listProduct.sort((p1, p2) => parseInt(p2.price) - parseInt(p1.price));
                 break;
             case SORT_VALUES.ASC_NAME:
-                listProduct = listProduct.sort((p1, p2) =>
-                    p1.name < p2.name ? -1 : p1.name > p2.name ? 1 : 0
-                );
+                listProduct = listProduct.sort((p1, p2) => (p1.name < p2.name ? -1 : p1.name > p2.name ? 1 : 0));
                 break;
             case SORT_VALUES.DESC_NAME:
-                listProduct = listProduct.sort((p1, p2) =>
-                    p1.name > p2.name ? -1 : p1.name < p2.name ? 1 : 0
-                );
+                listProduct = listProduct.sort((p1, p2) => (p1.name > p2.name ? -1 : p1.name < p2.name ? 1 : 0));
                 break;
             default:
                 break;
@@ -133,8 +122,9 @@ function Product(props) {
             }
         }
         setSelectedCategory(category);
+        setCurrentPage(1);
     };
-
+    
     const handleChangeBrand = (brand = "") => (e) => {
         if (selectedBrand) {
             if (brandSlug) {
@@ -142,11 +132,16 @@ function Product(props) {
             }
         }
         setSelectedBrand(brand);
+        setCurrentPage(1);
     };
 
-    // const handleChangeSort = (value) => {
-    //     setSortValue(value);
-    // };
+    const handleChangePageSize = (currentPage, newPageSize) => {
+        setPageSize(newPageSize);
+    };
+
+    const handleChangePage = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     return (
         <>
@@ -166,10 +161,7 @@ function Product(props) {
                                 <Row>
                                     {selectedCategory ? (
                                         <Col span={24}>
-                                            <Checkbox
-                                                checked={true}
-                                                onClick={handleChangeCategory("")}
-                                            >
+                                            <Checkbox checked={true} onClick={handleChangeCategory("")}>
                                                 {selectedCategory["name"]}
                                             </Checkbox>
                                         </Col>
@@ -177,10 +169,7 @@ function Product(props) {
                                         <>
                                             {categories.map((c) => (
                                                 <Col key={c["id"]} span={24}>
-                                                    <Checkbox
-                                                        checked={false}
-                                                        onChange={handleChangeCategory(c)}
-                                                    >
+                                                    <Checkbox checked={false} onChange={handleChangeCategory(c)}>
                                                         {c["name"]}
                                                     </Checkbox>
                                                 </Col>
@@ -200,10 +189,7 @@ function Product(props) {
                                     <>
                                         {brands.map((b) => (
                                             <Col key={b["id"]} span={24}>
-                                                <Checkbox
-                                                    checked={false}
-                                                    onChange={handleChangeBrand(b)}
-                                                >
+                                                <Checkbox checked={false} onChange={handleChangeBrand(b)}>
                                                     {b["name"]}
                                                 </Checkbox>
                                             </Col>
@@ -222,21 +208,41 @@ function Product(props) {
                                         // onChange={handleChangeSort}
                                     >
                                         {SORT_MODES.map((mode) => (
-                                            <Select.Option
-                                                key={mode["value"]}
-                                                value={mode["value"]}
-                                            >
-                                                <Link
-                                                    to={`${location.pathname}?sort=${mode["value"]}`}
-                                                >
+                                            <Select.Option key={mode["value"]} value={mode["value"]}>
+                                                <Link to={`${location.pathname}?sort=${mode["value"]}`}>
                                                     {mode["icon"]} {mode["text"]}
                                                 </Link>
                                             </Select.Option>
                                         ))}
                                     </Select>
                                 </Col>
+                                <Col span={18}>
+                                    <Pagination
+                                        showSizeChanger
+                                        onShowSizeChange={handleChangePageSize}
+                                        current={currentPage}
+                                        pageSizeOptions={[8, 12, 24, 48]}
+                                        pageSize={pageSize}
+                                        total={processedProducts.length}
+                                        className="float-right"
+                                        onChange={handleChangePage}
+                                    />
+                                </Col>
                             </Row>
-                            <ProductCardGrid data={processedProducts} loading={isLoading} />
+                            <ProductCardGrid
+                                data={processedProducts.slice((currentPage - 1) * pageSize, pageSize * currentPage)}
+                                loading={isLoading}
+                            />
+                            <Pagination
+                                showSizeChanger
+                                onShowSizeChange={handleChangePageSize}
+                                current={currentPage}
+                                pageSizeOptions={[8, 12, 24, 48]}
+                                pageSize={pageSize}
+                                total={processedProducts.length}
+                                className="mb-15 float-right"
+                                onChange={handleChangePage}
+                            />
                         </Col>
                     </Row>
                 </Col>

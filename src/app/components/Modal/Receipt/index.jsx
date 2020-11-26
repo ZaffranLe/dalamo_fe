@@ -57,6 +57,13 @@ function ListReceiptModal({ open, onClose }) {
             render: (text, record) => moment(record["createdDate"]).format("HH:mm DD/MM/YYYY"),
         },
         {
+            title: "Trạng thái",
+            key: "statusDescription",
+            render: (text, record) => (
+                <span style={{ color: record["statusColor"], fontWeight: "bold" }}>{record["statusDescription"]}</span>
+            ),
+        },
+        {
             title: "Tổng tiền",
             key: "totalPrice",
             render: (text, record) => formatVietnameseCurrency(parseInt(record["totalPrice"])),

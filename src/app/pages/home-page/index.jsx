@@ -41,7 +41,7 @@ function HomePage(props) {
                     <h2 className="txt--font-lobster">Sản phẩm nổi bật</h2>
                 </Col>
             </Row>
-            <Row gutter={2} style={{ backgroundColor: "#668866", paddingTop: 25, paddingBottom: 25 }}>
+            <Row gutter={2} style={{ backgroundColor: "#F2FBCC", paddingTop: 25, paddingBottom: 25 }}>
                 <Col span={24}>
                     <Skeleton loading={isLoading}>
                         <ProductCarousel products={hotProducts} />
