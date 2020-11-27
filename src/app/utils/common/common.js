@@ -48,7 +48,7 @@ export const getUserFromToken = () => {
     if (window.userInfo) {
         userInfo = window.userInfo;
     } else if (token) {
-        const tokenInfo = jwt.decode(tokenInfo);
+        const tokenInfo = jwt.decode(token);
         const { user, exp } = tokenInfo;
         const currentTime = new Date().getTime();
         if (parseInt(exp) * 1000 > currentTime) {

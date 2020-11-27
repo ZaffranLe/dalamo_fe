@@ -6,9 +6,7 @@ import { addProductToCart } from "../../redux/slices/cart";
 import { useDispatch, useSelector } from "react-redux";
 import { calcDiscountPrice, formatVietnameseCurrency } from "../../utils/common/common";
 import ProductCard from "../../components/Product/product-card";
-import faker from "faker";
 import ProductComment from "./comment-section";
-faker.locale = "vi";
 
 function ProductDetail(props) {
     const { detailProduct: product, isLoading, products, isSucceed } = useSelector((state) => state.product);

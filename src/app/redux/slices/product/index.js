@@ -12,8 +12,8 @@ const initState = {
     isSucceed: false,
 };
 
-const homePage = createSlice({
-    name: "homePage",
+const product = createSlice({
+    name: "product",
     initialState: initState,
     reducers: {
         setHotProducts: (state, action) => {
@@ -40,7 +40,7 @@ const homePage = createSlice({
     },
 });
 
-const { reducer, actions } = homePage;
+const { reducer, actions } = product;
 export const {
     setProducts,
     setHotProducts,

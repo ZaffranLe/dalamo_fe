@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatVietnameseCurrency } from "../../../utils/common/common";
 import { fetchReceipts } from "../../../redux/slices/cart";
 import moment from "moment";
+import { fetchDetailReceipt } from "../../../redux/slices/receipt";
 
 function ListReceiptModal({ open, onClose }) {
     const { receipts, isLoading, isSucceed } = useSelector((state) => state.cart);
+    const { isLoading: loadingDetailReceipt } = useSelector((state) => state.receipt);
     const { loggedIn } = useSelector((state) => state.login);
     const user = window.userInfo;
 
@@ -60,18 +62,31 @@ function ListReceiptModal({ open, onClose }) {
             title: "Trạng thái",
             key: "statusDescription",
             render: (text, record) => (
-                <span style={{ color: record["statusColor"], fontWeight: "bold" }}>{record["statusDescription"]}</span>
+                <span style={{ color: record["statusColor"], fontWeight: "bold" }}>
+                    {record["statusDescription"]}
+                </span>
             ),
         },
         {
             title: "Tổng tiền",
             key: "totalPrice",
-            render: (text, record) => formatVietnameseCurrency(parseInt(record["totalPrice"])),
+            render: (text, record) => (
+                <span style={{ fontWeight: "bold", color: "red" }}>
+                    {formatVietnameseCurrency(parseInt(record["totalPrice"]))}
+                </span>
+            ),
         },
         {
             title: "#",
             key: "actions",
-            render: (text, record) => <Button type="primary" icon={<EyeOutlined />} />,
+            render: (text, record) => (
+                <Button
+                    type="primary"
+                    onClick={() => dispatch(fetchDetailReceipt(record["id"]))}
+                    icon={<EyeOutlined />}
+                    loading={loadingDetailReceipt}
+                />
+            ),
         },
     ];
 

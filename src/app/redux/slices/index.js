@@ -7,6 +7,8 @@ import brand from "./brand";
 import cart from "./cart";
 import comment from "./comment";
 import header from "./header";
+import receipt from "./receipt";
+import user from "./user";
 
 const rootReducer = combineReducers({
     compare,
@@ -17,6 +19,8 @@ const rootReducer = combineReducers({
     cart,
     comment,
     header,
+    receipt,
+    user,
 });
 
 export default rootReducer;

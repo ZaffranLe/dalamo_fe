@@ -24,15 +24,18 @@ import CompareModal from "../../Modal/Compare";
 import LoginModal from "../../Modal/Login";
 import { getSlug, getUserFromToken } from "../../../utils/common/common";
 import ListReceiptModal from "../../Modal/Receipt";
+import DetailReceipt from "../../Modal/Receipt/detail";
 import _ from "lodash";
 import { fetchProducts } from "../../../redux/slices/product";
 import { setSearchResults, setOpenSearchResult } from "../../../redux/slices/header";
 import { setOpenCart } from "../../../redux/slices/cart";
+import { setUserModal } from "../../../redux/slices/user";
+import UserModal from "../../Modal/UserInfo";
 
 function UserHeader({ history }) {
     const dispatch = useDispatch();
-    const productsCompare = useSelector((state) => state.compare.products);
-    const productsCart = useSelector((state) => state.cart.products);
+    const { products: productsCompare } = useSelector((state) => state.compare);
+    const { products: productsCart } = useSelector((state) => state.cart);
     const { categories } = useSelector((state) => state.category);
     const { brands } = useSelector((state) => state.brand);
     const { products } = useSelector((state) => state.product);
@@ -161,7 +164,9 @@ function UserHeader({ history }) {
                             </>
                         }
                     >
-                        <Menu.Item key="Profile">Tài khoản của tôi</Menu.Item>
+                        <Menu.Item key="Profile" onClick={() => dispatch(setUserModal(true))}>
+                            Tài khoản của tôi
+                        </Menu.Item>
                         <Menu.Item key="Orders" onClick={() => setReceiptModal(true)}>
                             Danh sách đơn hàng
                         </Menu.Item>
@@ -191,7 +196,10 @@ function UserHeader({ history }) {
                     <Link to="/cart">
                         <Tooltip title={`Giỏ hàng có ${productsCart.length} sản phẩm`}>
                             <Badge count={productsCart.length}>
-                                <ShoppingTwoTone twoToneColor="#6da9f7" className="icon--non-margin" />
+                                <ShoppingTwoTone
+                                    twoToneColor="#6da9f7"
+                                    className="icon--non-margin"
+                                />
                             </Badge>
                         </Tooltip>
                     </Link>
@@ -212,6 +220,8 @@ function UserHeader({ history }) {
             <CompareModal />
             <LoginModal />
             <ListReceiptModal open={receiptModal} onClose={() => setReceiptModal(false)} />
+            <DetailReceipt />
+            <UserModal />
         </Layout.Header>
     );
 }
