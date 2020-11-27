@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Divider, Input, PageHeader, Row, Table, Form } from "antd";
+import { Alert, Button, Col, Divider, Input, PageHeader, Row, Table, Form,  Radio } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
@@ -292,6 +292,14 @@ function Cart(props) {
                                     </Col>
                                     <Col span={8} className="text-red text-bold text-right">
                                         {formatVietnameseCurrency(originalPrice - discountPrice)}
+                                    </Col>
+                                </Row>
+                                <Row className="mt-10">
+                                    <Col span={24}>
+                                        <h4>Phương thức thanh toán</h4>
+                                    </Col>
+                                    <Col span={24}>
+                                        <Radio defaultChecked={true}>Giao hàng COD (Nhận hàng trả tiền)</Radio>
                                     </Col>
                                 </Row>
                                 <Divider />
