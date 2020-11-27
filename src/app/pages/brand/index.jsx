@@ -15,7 +15,7 @@ function Brand({ match }) {
     }
 
     useEffect(() => {
-        document.title = "Thương hiệu";
+        window.scrollTo({ top: 0, behavior: "smooth" });
         dispatch(fetchBrands(brands));
     }, []);
 

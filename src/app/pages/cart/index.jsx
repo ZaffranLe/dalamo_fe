@@ -26,7 +26,7 @@ function Cart(props) {
     };
 
     useEffect(() => {
-        document.title = "Giỏ hàng";
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
     const originalPrice = useMemo(() => {

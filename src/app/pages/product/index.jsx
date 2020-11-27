@@ -51,6 +51,7 @@ function Product(props) {
 
     useEffect(() => {
         dispatch(fetchProducts(products));
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
     const {

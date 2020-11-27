@@ -14,7 +14,7 @@ function CommentSection(props) {
     return (
         <Skeleton loading={isLoading}>
             <Col span={24}>
-                <Carousel slidesPerRow={2} draggable speed={2000} autoplay={true} autoplaySpeed={10000} pauseOnHover={false} dots={false}>
+                <Carousel slidesPerRow={3} draggable speed={2000} autoplay={true} autoplaySpeed={10000} pauseOnHover={false} dots={false}>
                     {comments.map((comment, idx) => (
                         <Row key={idx}>
                             <Col span={24}>

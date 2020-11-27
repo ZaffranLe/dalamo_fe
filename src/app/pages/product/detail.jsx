@@ -24,6 +24,7 @@ function ProductDetail(props) {
         if (products.length === 0) {
             dispatch(fetchProducts(products));
         }
+        
         return () => {
             dispatch(setDetailProduct(null));
         };
@@ -56,6 +57,7 @@ function ProductDetail(props) {
                     setAverageRating(rating);
                 }
             }
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     }, [product]);
 
@@ -135,10 +137,7 @@ function ProductDetail(props) {
                                                 <Carousel draggable autoplay autoplaySpeed={5000} pauseOnHover>
                                                     {product["images"].map((img) => (
                                                         <div key={img["id"]}>
-                                                            <Image
-                                                                src={`${img["url"]}/tr:h-500`}
-                                                                alt="Product image"
-                                                            />
+                                                            <Image src={`${img["url"]}/tr:h-500`} alt="Product image" />
                                                         </div>
                                                     ))}
                                                 </Carousel>
