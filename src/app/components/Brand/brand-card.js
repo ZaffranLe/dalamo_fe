@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { Button, Card, Carousel, Col, Row, Tooltip } from "antd";
+import { Button, Card, Carousel, Col, Image, Row, Tooltip } from "antd";
 import PlaceHolderImg from "../../assets/img/product-placeholder.png";
 import { useDispatch } from "react-redux";
 import "./Brand.scss";
@@ -16,7 +16,11 @@ function BrandCard(props) {
             cover={
                 <div style={{ width: "100%" }}>
                     <div>
-                        <img className="brand-card__img" alt="Placeholder" src={PlaceHolderImg} />
+                        <Image
+                            className="brand-card__img"
+                            alt="Placeholder"
+                            src={brand["imagrUrl"] ? brand["imagrUrl"] : PlaceHolderImg}
+                        />
                     </div>
                 </div>
             }

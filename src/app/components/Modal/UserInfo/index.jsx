@@ -12,7 +12,7 @@ function UserModal(props) {
     const { isLoading, userModal } = useSelector((state) => state.user);
 
     const [form] = Form.useForm();
-    const initUser = { ...window.userInfo, newPassword: "", password: "" };
+    const initUser = { ...window.userInfo, newPassword: "" };
 
     const handleUpdateUser = async () => {
         const values = await form.validateFields();
@@ -23,19 +23,25 @@ function UserModal(props) {
         dispatch(updateUserInfo(newUser, history));
     };
 
+    const handlePhoneKeyPress = (e) => {
+        if (isNaN(e.key)) {
+            e.preventDefault();
+        }
+    };
+
     return (
         <Modal
             visible={userModal}
             footer={
                 <Space>
-                    <Button type="primary">
+                    <Button loading={isLoading} onClick={handleUpdateUser} type="primary">
                         <SaveFilled /> Lưu
                     </Button>
                     <Button onClick={() => dispatch(setUserModal(false))}>Đóng</Button>
                 </Space>
             }
             title="Thông tin tài khoản"
-            width="40%"
+            width="50%"
         >
             <Form
                 form={form}
@@ -56,7 +62,7 @@ function UserModal(props) {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="newPassowrd"
+                    name="newPassword"
                     label="Mật khẩu mới"
                     hasFeedback
                 >
@@ -85,16 +91,9 @@ function UserModal(props) {
                 </Form.Item>
                 <Form.Item
                     name="phone"
-                    rules={[
-                        {
-                            type: "number",
-                            max: 12,
-                            message: "Số điện thoại sai định dạng",
-                        },
-                    ]}
                     label="SĐT"
                 >
-                    <Input />
+                    <Input onKeyPress={handlePhoneKeyPress} />
                 </Form.Item>
                 <Form.Item
                     name="email"
@@ -110,18 +109,6 @@ function UserModal(props) {
                 </Form.Item>
                 <Form.Item name="address" label="Địa chỉ">
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    name="password"
-                    label="Mật khẩu hiện tại"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Bạn cần nhập mật khẩu để thay đổi thông tin cá nhân.",
-                        },
-                    ]}
-                >
-                    <Input.Password />
                 </Form.Item>
             </Form>
         </Modal>

@@ -33,8 +33,12 @@ function updateUserInfo(user, history) {
                 method: "put",
                 data: user,
             });
+            toast.success("Cập nhật thông tin thành công! Vui lòng đăng nhập lại.");
+            dispatch(setUserModal(false));
             dispatch(logout(history));
         } catch (e) {
+            toast.error("Cập nhật thông tin thất bại! Vui lòng thử lại sau.")
+            console.error(e);
         } finally {
             dispatch(setIsLoading(false));
         }
