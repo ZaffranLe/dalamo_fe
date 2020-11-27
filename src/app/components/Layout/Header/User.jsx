@@ -63,7 +63,7 @@ function UserHeader({ history }) {
     const handleSearch = (e) => {
         let newProducts = [];
         const text = e.target.value;
-        if (text) {
+        if (text && text.length >= 3) {
             newProducts = products.filter((product) => product["slug"].includes(getSlug(text)));
         }
         dispatch(setSearchResults({ result: newProducts, text }));
@@ -140,7 +140,7 @@ function UserHeader({ history }) {
                     ))}
                 </Menu.SubMenu>
 
-                <Menu.Item className="padding-menu" style={{ width: "25%" }}>
+                <Menu.Item className="padding-menu" style={{ width: "20%" }}>
                     <Input
                         placeholder="Tìm kiếm..."
                         suffix={<SearchOutlined />}
