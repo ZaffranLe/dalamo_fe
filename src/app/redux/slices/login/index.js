@@ -9,6 +9,7 @@ const initState = {
     modalState: false,
     defaultActive: "login",
     loggedIn: false,
+    isLoading: false,
 };
 
 const loginSlice = createSlice({
@@ -27,12 +28,15 @@ const loginSlice = createSlice({
         },
         setLoggedIn: (state, action) => {
             state.loggedIn = action.payload;
+        },
+        setIsLoading: (state, action) => {
+            state.isLoading = action.payload;
         }
     },
 });
 
 const { reducer, actions } = loginSlice;
-export const { openModal, closeModal, setDefaultActive, setLoggedIn } = actions;
+export const { openModal, closeModal, setDefaultActive, setLoggedIn, setIsLoading } = actions;
 
 function register(user) {
     return async (dispatch) => {
@@ -54,6 +58,7 @@ function register(user) {
 function login(credentials) {
     return async (dispatch) => {
         try {
+            dispatch(setIsLoading(true));
             const resp = await axiosClient({
                 url: "/login",
                 method: "post",
@@ -69,6 +74,8 @@ function login(credentials) {
         } catch (e) {
             toast.error("Đăng nhập thất bại! Vui lòng thử lại sau.");
             console.error(e);
+        } finally {
+            dispatch(setIsLoading(false));
         }
     };
 }

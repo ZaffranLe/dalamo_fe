@@ -6,7 +6,7 @@ import SkinCare from "../../../assets/img/skin-care.jpg";
 import { toast } from "react-toastify";
 
 function LoginModal(props) {
-    const { modalState, defaultActive } = useSelector((state) => state.login);
+    const { modalState, defaultActive, isLoading } = useSelector((state) => state.login);
     const dispatch = useDispatch();
 
     const handleCloseModal = () => {
@@ -71,7 +71,11 @@ function LoginModal(props) {
                         onChange={handleChangeTab}
                     >
                         <Tabs.TabPane tab="Đăng nhập" key="login" style={{ marginTop: "23%" }}>
-                            <Form form={loginForm} initialValues={initLoginForm} wrapperCol={{ span: 16, offset: 4 }}>
+                            <Form
+                                form={loginForm}
+                                initialValues={initLoginForm}
+                                wrapperCol={{ span: 16, offset: 4 }}
+                            >
                                 <Form.Item
                                     name="email"
                                     rules={[
@@ -98,7 +102,13 @@ function LoginModal(props) {
                                     <Checkbox>Ghi nhớ đăng nhập</Checkbox>
                                 </Form.Item>
                                 <Form.Item wrapperCol={{ offset: 9, span: 4 }}>
-                                    <Button onClick={handleLogin} type="primary">Đăng nhập</Button>
+                                    <Button
+                                        loading={isLoading}
+                                        onClick={handleLogin}
+                                        type="primary"
+                                    >
+                                        Đăng nhập
+                                    </Button>
                                 </Form.Item>
                             </Form>
                         </Tabs.TabPane>
@@ -175,7 +185,11 @@ function LoginModal(props) {
                 <Col span={12} style={{ textAlign: "center", padding: 25 }}>
                     <Popover
                         content={
-                            <a href="http://www.freepik.com" rel="noopener noreferrer" target="_blank">
+                            <a
+                                href="http://www.freepik.com"
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
                                 Designed by stories / Freepik
                             </a>
                         }

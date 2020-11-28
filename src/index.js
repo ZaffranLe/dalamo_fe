@@ -6,12 +6,15 @@ import "antd/dist/antd.css";
 import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "react-redux";
 import App from "./App";
-import store from "./app/redux/store";
+import { store, persistor } from "./app/redux/store";
 import { ToastContainer } from "react-toastify";
+import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <PersistGate loading={null} persistor={persistor}>
+            <App />
+        </PersistGate>
         <ToastContainer position="bottom-left" />
     </Provider>,
     document.getElementById("root")
