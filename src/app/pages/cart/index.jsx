@@ -109,8 +109,7 @@ function Cart(props) {
                 <img
                     alt="Product img"
                     style={{ width: 100, height: 100 }}
-                    // src={images.length > 0 ? images[0]["name"] : PlaceHolderImg}
-                    src={PlaceHolderImg}
+                    src={images.length > 0 ? images[0]["url"] : PlaceHolderImg}
                 />
             ),
         },
