@@ -158,7 +158,7 @@ function submitComment(comment) {
                 data: comment
             });
             dispatch(setIsSucceed(true));
-            toast.success("Dalamo xin chân thành cảm ơn ý kiến đóng góp của bạn.");
+            toast.success("SMMGate xin chân thành cảm ơn ý kiến đóng góp của bạn.");
         } catch (e) {
             console.error(e);
             toast.error("Có lỗi xảy ra trên hệ thống! Vui lòng thử lại sau.")

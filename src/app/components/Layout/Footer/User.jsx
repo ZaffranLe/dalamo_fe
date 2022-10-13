@@ -8,9 +8,9 @@ function Footer(props) {
             <Row>
                 <Col offset={4} span={4}>
                     <div className="logo">
-                        <img src={Logo} alt="Logo dalamo" style={{ width: "100%" }} />
+                        <img src={Logo} alt="Logo SMMGate" style={{ width: "220px", marginBottom: "12px" }} />
                     </div>
-                    © Dalamo - All rights reversed
+                    © SMMGate - All rights reversed
                 </Col>
                 <Col span={4}>
                     <Menu>

@@ -65,7 +65,7 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Dalamo</h1>
+                                <h1>SMMGate</h1>
                                 <div>
                                     <p>Bạn của mọi nhà</p>
                                 </div>

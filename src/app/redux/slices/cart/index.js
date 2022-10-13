@@ -118,7 +118,7 @@ function submitOrder(data) {
                 method: "post",
                 data,
             });
-            toast.success("Cảm ơn bạn đã ủng hộ Dalamo. Đơn hàng sẽ được nhanh chóng xác nhận và vận chuyển.");
+            toast.success("Cảm ơn bạn đã ủng hộ SMMGate. Đơn hàng sẽ được nhanh chóng xác nhận và vận chuyển.");
             dispatch(setProducts([]));
             dispatch(setIsSucceed(true));
         } catch (e) {

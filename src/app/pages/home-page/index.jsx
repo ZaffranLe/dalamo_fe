@@ -13,7 +13,7 @@ function HomePage(props) {
     const { hotProducts, isLoading } = useSelector((state) => state.product);
 
     useEffect(() => {
-        document.title = "Dalamo";
+        // document.title = "Dalamo";
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 

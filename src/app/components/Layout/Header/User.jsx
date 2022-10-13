@@ -73,9 +73,9 @@ function UserHeader({ history }) {
 
     return (
         <Layout.Header className="header fixed">
-            <div className="logo">
+            <div className="logo" style={{ width: "190px" }}>
                 <Link to="/">
-                    <img src={Logo} alt="Logo dalamo" style={{ maxWidth: "100%" }} />
+                    <img src={Logo} alt="Logo SMMGate" style={{ maxWidth: "100%", marginBottom: "4px" }} />
                 </Link>
             </div>
             <Menu key="menu" id="header-menu" mode="horizontal" selectable={false}>
