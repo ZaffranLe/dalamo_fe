@@ -125,7 +125,7 @@ function Product(props) {
         setSelectedCategory(category);
         setCurrentPage(1);
     };
-    
+
     const handleChangeBrand = (brand = "") => (e) => {
         if (selectedBrand) {
             if (brandSlug) {
@@ -178,8 +178,8 @@ function Product(props) {
                                         </>
                                     )}
                                 </Row>
-                                <Divider />
-                                <h4>Hãng sản xuất</h4>
+                                {/* <Divider /> */}
+                                {/* <h4>Hãng sản xuất</h4>
                                 {selectedBrand ? (
                                     <Col span={24}>
                                         <Checkbox checked={true} onClick={handleChangeBrand("")}>
@@ -196,7 +196,7 @@ function Product(props) {
                                             </Col>
                                         ))}
                                     </>
-                                )}
+                                )} */}
                             </div>
                         </Col>
                         <Col span={18} className="bordered">
@@ -206,7 +206,7 @@ function Product(props) {
                                         defaultValue={null}
                                         placeholder="Sắp xếp theo"
                                         style={{ width: "100%" }}
-                                        // onChange={handleChangeSort}
+                                    // onChange={handleChangeSort}
                                     >
                                         {SORT_MODES.map((mode) => (
                                             <Select.Option key={mode["value"]} value={mode["value"]}>

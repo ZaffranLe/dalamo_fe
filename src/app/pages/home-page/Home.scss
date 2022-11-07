@@ -7,35 +7,47 @@
         cursor: pointer;
         width: 100px;
         border: 0px;
+
         &-left {
             left: 0;
         }
+
         &-right {
             right: 0;
         }
     }
+
     .ant-carousel {
-        background-image: url("../../assets/img/carousel-bg.jpg");
-        background-size: contain;
+        background-image: url("../../assets/img/bg-carousel.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        backdrop-filter: opacity(0.1);
     }
+
     .custom-slide {
         height: 750px;
+
         .slide-wrapper-row {
             height: 100%;
+
             .slide-wrapper-col {
                 height: 100%;
+
                 .slide-content {
                     position: absolute;
                     top: 45%;
                     left: 10%;
                     transform: translateY(-50%);
                     width: 100%;
+
                     h1 {
-                        font-size: 24px;
-                        color: #ab87cd;
+                        font-size: 32px;
+                        font-weight: 700;
+                        color: #668866;
                     }
+
                     h1::before {
-                        background-color: #ab87cd;
+                        background-color: #668866;
                         content: "";
                         display: inline-block;
                         height: 2px;
@@ -44,7 +56,9 @@
                         width: 25%;
                         margin-right: 15px;
                     }
+
                     p {
+                        color: #fff;
                         font-size: 48px;
                         margin-bottom: 0px;
                     }
@@ -56,6 +70,7 @@
 
 .featured-section {
     margin-top: 10px;
+
     .ant-card {
         text-align: center;
     }
@@ -64,12 +79,15 @@
         &-left {
             background-color: #ccfbe9;
         }
+
         &-middle {
             background-color: #f2fbcc;
         }
+
         &-right {
             background-color: #ddfbcc;
         }
+
         &-title {
             font-family: "Lobster", cursive;
         }

@@ -24,7 +24,7 @@ function ProductDetail(props) {
         if (products.length === 0) {
             dispatch(fetchProducts(products));
         }
-        
+
         return () => {
             dispatch(setDetailProduct(null));
         };
@@ -117,7 +117,7 @@ function ProductDetail(props) {
     };
 
     const tabPaneStyle = {
-        maxHeight: 500,
+        // maxHeight: 500,
         overflow: "auto",
     };
 
@@ -177,9 +177,8 @@ function ProductDetail(props) {
                                                                 </span>
                                                             )}
                                                             <span
-                                                                className={`${
-                                                                    product["isDiscount"] && "original-price"
-                                                                }`}
+                                                                className={`${product["isDiscount"] && "original-price"
+                                                                    }`}
                                                             >
                                                                 {formatVietnameseCurrency(product["price"])}
                                                             </span>
@@ -235,24 +234,24 @@ function ProductDetail(props) {
                                                     <Col span={24}>
                                                         <Tabs defaultActiveKey="overview">
                                                             <Tabs.TabPane
-                                                                tab="Tổng quan"
+                                                                tab="Thông tin"
                                                                 key="overview"
                                                                 style={tabPaneStyle}
                                                             >
-                                                                <h3>Xuất xứ: {product["origin"]}</h3>
-                                                                <Divider orientation="left">Mô tả</Divider>
-                                                                <p>{product["description"]}</p>
-                                                                <Divider orientation="left">Đặc điểm</Divider>
+                                                                {/* <h3>Xuất xứ: {product["origin"]}</h3> */}
+                                                                {/* <Divider orientation="left">Mô tả</Divider>
+                                                                <p style={{ whiteSpace: 'pre' }}>{product["description"]}</p> */}
+                                                                <Divider orientation="left">Mô tả chi tiết</Divider>
                                                                 <ul>
-                                                                    {product["characteristic"] &&
-                                                                        product["characteristic"]
+                                                                    {product["description"] &&
+                                                                        product["description"]
                                                                             .trim()
-                                                                            .split("-")
-                                                                            .slice(1)
+                                                                            .split("\n")
+                                                                            .filter(e => e.trim() !== '')
                                                                             .map((ch, idx) => <li key={idx}>{ch}</li>)}
                                                                 </ul>
                                                             </Tabs.TabPane>
-                                                            <Tabs.TabPane
+                                                            {/* <Tabs.TabPane
                                                                 tab="Hướng dẫn sử dụng"
                                                                 key="guide"
                                                                 style={tabPaneStyle}
@@ -277,7 +276,7 @@ function ProductDetail(props) {
                                                                                 <li key={idx}>{ingredient}</li>
                                                                             ))}
                                                                 </ol>
-                                                            </Tabs.TabPane>
+                                                            </Tabs.TabPane> */}
                                                         </Tabs>
                                                     </Col>
                                                 </Row>

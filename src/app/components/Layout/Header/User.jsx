@@ -109,7 +109,7 @@ function UserHeader({ history }) {
                 <Menu.Item className="padding-menu" key="Product" icon={<InboxOutlined />}>
                     <Link to="/product">Sản phẩm</Link>
                 </Menu.Item>
-                <Menu.SubMenu
+                {/* <Menu.SubMenu
                     className="padding-menu"
                     title={
                         <>
@@ -138,7 +138,7 @@ function UserHeader({ history }) {
                             </Link>
                         </Menu.Item>
                     ))}
-                </Menu.SubMenu>
+                </Menu.SubMenu> */}
 
                 <Menu.Item className="padding-menu" style={{ width: "20%" }}>
                     <Input

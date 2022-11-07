@@ -39,10 +39,10 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Nhập khẩu</h1>
+                                <h1>Sứ mệnh</h1>
                                 <div>
-                                    <p>100% từ CHLB Đức</p>
-                                    <p>Made in Germany</p>
+                                    <p>Sản phẩm tốt nhất</p>
+                                    <p>Giải pháp hữu hiệu </p>
                                 </div>
                             </div>
                         </Col>
@@ -52,10 +52,10 @@ function HomeCarousel(props) {
                     <Row className="slide-wrapper-row">
                         <Col span={12} push={12} className="slide-wrapper-col">
                             <div className="slide-content">
-                                <h1>Hàng chính hãng</h1>
+                                <h1>An toàn - Chất lượng</h1>
                                 <div>
-                                    <p>Nâng niu từng sản phẩm</p>
-                                    <p>Vì sức khoẻ cộng đồng</p>
+                                    <p>Xây niềm tin</p>
+                                    <p>Vững tương lai</p>
                                 </div>
                             </div>
                         </Col>
