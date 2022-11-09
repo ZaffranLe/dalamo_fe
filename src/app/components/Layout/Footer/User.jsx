@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Layout, Menu, Row } from "antd";
 import Logo from "../../../assets/img/logo.png";
+import { Link } from "react-router-dom";
 
 function Footer(props) {
     return (
@@ -14,7 +15,7 @@ function Footer(props) {
                 </Col>
                 <Col span={4}>
                     <Menu>
-                        <Menu.Item>Về chúng tôi</Menu.Item>
+                        <Menu.Item><Link to={`/about-us`}>Về chúng tôi</Link></Menu.Item>
                         <Menu.Item>Thông tin liên lạc</Menu.Item>
                         <Menu.Item>Theo dõi đơn hàng</Menu.Item>
                     </Menu>

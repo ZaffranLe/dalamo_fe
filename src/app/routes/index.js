@@ -4,6 +4,7 @@ import { Switch, Redirect, Route } from "react-router";
 import NotFound from "../components/NotFound";
 import UserLayout from "../components/Layout/User.jsx";
 import jwt from "jsonwebtoken";
+const AboutUs = lazy(() => import("../pages/about-us"));
 const Brand = lazy(() => import("../pages/brand"));
 const HomePage = lazy(() => import("../pages/home-page"));
 const Cart = lazy(() => import("../pages/cart"));
@@ -32,6 +33,7 @@ function Routes() {
     return (
         <BrowserRouter>
             <Switch>
+                <LayoutRoute exact path="/about-us" component={AboutUs} />
                 <LayoutRoute exact path="/cart" component={Cart} />
                 <LayoutRoute exact path="/brand" component={Brand} />
                 <LayoutRoute exact path="/brand/:brandSlug" component={Product} />
